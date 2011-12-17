@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Facepunch</string>
+    
+    <!-- Login view -->
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="loggingIn">Logging in&#8230;</string>
+    <string name="successfulLoginRememberPassword">Do you want the application to remember this password?</string>
+    <string name="failedLogin">You have entered an invalid username or password.</string>
+    <string name="rememberPassword">Remember</string>
+    <string name="forgetPassword">Not now</string>
+</resources>
