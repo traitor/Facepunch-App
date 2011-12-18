@@ -36,4 +36,4 @@ Roadmap
 Screenshots
 ---------------------
 
-![Login form](http://i.imgur.com/m8v58.png)
+![Login form](http://i.imgur.com/m8v58.png) ![Frontpage](http://i.imgur.com/M2qB1.png)

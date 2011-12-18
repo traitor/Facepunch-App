@@ -79,7 +79,6 @@ public class LoginActivity extends Activity
 											editor.commit();
 											
 											startActivity( frontpageIntent );
-											finish();
 										}
 									} )
 									.setNegativeButton( getString( R.string.forgetPassword ), new DialogInterface.OnClickListener()
@@ -87,14 +86,12 @@ public class LoginActivity extends Activity
 										public void onClick( DialogInterface dialog, int id )
 										{
 											startActivity( frontpageIntent );
-											finish();
 										}
 									} )
 									.create()
 								.show();
 							} else {
 								startActivity( frontpageIntent );
-								finish();
 							}
 						} else {
 							// Show failed login message
