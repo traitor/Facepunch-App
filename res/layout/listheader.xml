@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Header item in a list -->
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginTop="7dp"
+	android:orientation="vertical">
+	
+	<!-- Title -->
+	<TextView
+	    android:id="@+id/headerTitle"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="3dp"
+	    android:layout_marginBottom="3dp"
+	    android:textColor="#cc0202"
+	    android:textSize="14dp"
+	    android:textStyle="bold"
+	     />
+	
+	<!-- Seperator -->
+	<View
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:background="#cc0202"/>
+</LinearLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Forum item in a list -->
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+	
+	<!-- Content -->
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="45dp"
+	    android:orientation="horizontal">
+	    
+	    <!-- Icon -->
+	    <ImageView
+	        android:id="@+id/forumIcon"
+	        android:layout_width="30dp"
+	        android:layout_height="fill_parent"
+	        android:layout_marginLeft="8dp"
+	        android:layout_marginRight="5dp"
+	        android:scaleType="center"
+	        />
+	    
+	    <!-- Title -->
+		<TextView
+		    android:id="@+id/forumTitle"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_vertical"
+		    android:singleLine="true"
+		    android:ellipsize="end"
+		    android:textColor="#7b7b7b"
+		    android:textSize="17dp"
+		     />
+	</LinearLayout>
+	
+	<!-- Seperator -->
+	<View
+	    android:id="@+id/listSeparator"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:background="#e4e4e4"/>
+</LinearLayout>

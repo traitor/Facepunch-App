@@ -6,9 +6,9 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
-    <string name="loggingIn">Logging in&#8230;</string>
+    <string name="loggingIn">Logging in...</string>
     <string name="successfulLoginRememberPassword">Do you want the application to remember this password?</string>
-    <string name="failedLogin">You have entered an invalid username or password.</string>
+    <string name="failedLogin">Failed to log in with the specified username and password.</string>
     <string name="rememberPassword">Remember</string>
     <string name="forgetPassword">Not now</string>
 </resources>

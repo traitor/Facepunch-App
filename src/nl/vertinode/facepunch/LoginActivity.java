@@ -1,11 +1,12 @@
 package nl.vertinode.facepunch;
 
-import com.overvprojects.facepunch.R;
+import nl.vertinode.facepunch.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -14,11 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class LoginActivity extends Activity
-{
-	private final APISession api = new APISession();
-	
-	// Used for saving form input
-	private class LoginDetails
+{	
+	// Used for restoring form input
+	private class State
 	{
 		public String username;
 		public String password;
@@ -27,6 +26,7 @@ public class LoginActivity extends Activity
 	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
+		// Load layout
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.login );
 		
@@ -52,11 +52,14 @@ public class LoginActivity extends Activity
 				loginDialog.show();
 				
 				// Attempt logging in
-				api.login( username, password, new APISession.LoginCallback()
+				( (FPApp)getApplicationContext() ).api().login( username, password, new APISession.LoginCallback()
 				{
 					public void onResult( boolean success )
 					{
 						loginDialog.dismiss();
+						
+						// Prepare frontpage opening intent
+						final Intent frontpageIntent = new Intent( LoginActivity.this, FrontpageActivity.class );
 						
 						if ( success )
 						{
@@ -75,21 +78,24 @@ public class LoginActivity extends Activity
 											editor.putString( "password", password );
 											editor.commit();
 											
-											/// TODO: Continue on to frontpage activity
+											startActivity( frontpageIntent );
+											finish();
 										}
 									} )
 									.setNegativeButton( getString( R.string.forgetPassword ), new DialogInterface.OnClickListener()
 									{
 										public void onClick( DialogInterface dialog, int id )
 										{
-											/// TODO: Continue on to frontpage activity
+											startActivity( frontpageIntent );
+											finish();
 										}
 									} )
 									.create()
 								.show();
+							} else {
+								startActivity( frontpageIntent );
+								finish();
 							}
-							
-							/// TODO: Continue on to frontpage activity
 						} else {
 							// Show failed login message
 							new AlertDialog.Builder( LoginActivity.this )
@@ -105,7 +111,7 @@ public class LoginActivity extends Activity
 		} );
 		
 		// Restore form input
-		LoginDetails data = (LoginDetails)getLastNonConfigurationInstance();
+		State data = (State)getLastNonConfigurationInstance();
 		if ( data != null )
 		{
 			usernameField.setText( data.username );
@@ -121,7 +127,7 @@ public class LoginActivity extends Activity
 	@Override
 	public Object onRetainNonConfigurationInstance()
 	{
-		final LoginDetails data = new LoginDetails();
+		final State data = new State();
 		
 		data.username = ( (EditText)findViewById( R.id.usernameField ) ).getText().toString().trim();
 		data.password = ( (EditText)findViewById( R.id.passwordField ) ).getText().toString().trim();

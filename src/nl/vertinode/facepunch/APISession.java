@@ -200,7 +200,12 @@ public class APISession
 		
 		public int getId() { return id; }
 		public String getName() { return name; }
-		public ArrayList<Forum> getForums() { return forums; }
+		public Forum[] getForums()
+		{
+			Forum[] arr = new Forum[forums.size()];
+			forums.toArray( arr );
+			return arr;
+		}
 	}
 	
 	// Authentication
@@ -270,7 +275,7 @@ public class APISession
 					source = source.replaceAll( "&#[0-9]+;", "" );
 					source = source.replaceAll( "<!--.*?-->", "" );
 					source = source.replaceAll( ">[\\s]*?<", "><" );
-					source = quickMatch( "(.*?<\\/td>)<\\/tr><\\/table><center>", source );
+					source = source.substring( 0, source.length() - ( "</td></tr></table><center>" ).length() );
 					
 					XmlPullParserFactory factory;
 					try
