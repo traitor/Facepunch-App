@@ -267,7 +267,7 @@ public class APISession
 				if ( source != null )
 				{
 					// Fetch relevant part of the page
-					source = quickMatch( "(<td valign=top class=\"FrontPageForums\">[\\s\\S]*<center>)", source );
+					source = quickMatch( "(<td valign=top class=\"FrontPageForums\">[\\s\\S]*?<center>)", source );
 					source = source.replaceAll( "(valign|width|height|color)=([a-z0-9%]+)", "$1=\"$2\"" );
 					source = source.replaceAll( "(<img.*?\")>", "$1 />" );
 					source = source.replaceAll( "(<tbody[^>]+>)", "$1<tr>" );
