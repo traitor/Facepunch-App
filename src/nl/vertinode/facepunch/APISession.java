@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -172,6 +173,36 @@ public class APISession
 		public int getRatingCount( Rating rating ) { return ratings.containsKey( rating ) ? ratings.get( rating ) : 0; }
 	}
 	
+	/**
+	 * Classes for managing frontpage forums
+	 * 
+	 * @author Overv
+	 */
+	public class Forum
+	{
+		private Forum() {}
+		
+		private int id;
+		private String name;
+		
+		public int getId() { return id; }
+		public String getName() { return name; }
+	}
+	
+	public class Category
+	{
+		private Category() {}
+		
+		private int id;
+		private String name;
+		
+		private ArrayList<Forum> forums = new ArrayList<Forum>();
+		
+		public int getId() { return id; }
+		public String getName() { return name; }
+		public ArrayList<Forum> getForums() { return forums; }
+	}
+	
 	// Authentication
 	public interface LoginCallback
 	{
@@ -204,6 +235,105 @@ public class APISession
 					callback.onResult( true );
 				} else {
 					callback.onResult( false );
+				}
+			}
+		} );
+	}
+	
+	// Forum listing
+	public interface ForumCallback
+	{
+		public void onResult( boolean success, Category[] categories );
+	}
+	
+	/**
+	 * Retrieve the categories and forums visible on the frontpage.
+	 * 
+	 * @author Overv
+	 * 
+	 * @param callback Function to pass the thread list to.
+	 */
+	public void listForums( final ForumCallback callback )
+	{
+		asyncWebRequest( "", null, new WebRequestCallback()
+		{
+			public void onResult( String source, String cookies )
+			{
+				if ( source != null )
+				{
+					// Fetch relevant part of the page
+					source = quickMatch( "(<td valign=top class=\"FrontPageForums\">[\\s\\S]*<center>)", source );
+					source = source.replaceAll( "(valign|width|height|color)=([a-z0-9%]+)", "$1=\"$2\"" );
+					source = source.replaceAll( "(<img.*?\")>", "$1 />" );
+					source = source.replaceAll( "(<tbody[^>]+>)", "$1<tr>" );
+					source = source.replace( "&nbsp;", " " );
+					source = source.replaceAll( "&#[0-9]+;", "" );
+					source = source.replaceAll( "<!--.*?-->", "" );
+					source = source.replaceAll( ">[\\s]*?<", "><" );
+					source = quickMatch( "(.*?<\\/td>)<\\/tr><\\/table><center>", source );
+					
+					XmlPullParserFactory factory;
+					try
+					{
+						factory = XmlPullParserFactory.newInstance();
+						XmlPullParser parser = factory.newPullParser();
+						parser.setInput( new StringReader( source ) );
+						
+						ArrayList<Category> categories = new ArrayList<Category>();
+						Category currentCategory = null;
+						
+						int eventType = parser.getEventType();
+						while ( eventType != XmlPullParser.END_DOCUMENT )
+						{
+							if ( eventType == XmlPullParser.START_TAG )
+							{
+								if ( parser.getAttributeValue( null, "class" ) != null )
+								{
+									// Categories
+									if( parser.getName().equals( "tr" ) && parser.getAttributeValue( null, "class" ).contains( "forumhead" ) )
+									{
+										currentCategory = new Category();
+										categories.add( currentCategory );
+										
+										parser.next();
+										parser.next();
+										parser.next();
+										currentCategory.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
+										parser.next();
+										currentCategory.name = parser.getText();
+									} else
+									
+									// Forums
+									if ( parser.getName().equals( "h2" ) && parser.getAttributeValue( null, "class" ).equals( "forumtitle" ) )
+									{
+										Forum forum = new Forum();
+										currentCategory.forums.add( forum );
+										
+										parser.next();
+										forum.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
+										parser.next();
+										forum.name = parser.getText();
+									}
+								}
+							}
+							
+							eventType = parser.next();
+						}
+						
+						Category[] categoryArray = new Category[categories.size()];
+						categories.toArray( categoryArray );
+						callback.onResult( true, categoryArray );
+					} catch ( XmlPullParserException e )
+					{
+						Log.e( "XMLError", e.toString() );
+						callback.onResult( false, null );
+					} catch ( IOException e )
+					{
+						Log.e( "DEB", "It's the apocalypse!" );
+						callback.onResult( false, null );
+					}
+				} else {
+					callback.onResult( false, null );
 				}
 			}
 		} );
@@ -248,62 +378,61 @@ public class APISession
 						XmlPullParser parser = factory.newPullParser();
 						parser.setInput( new StringReader( source ) );
 						
-						FPThread[] threads = new FPThread[40];
-						int tid = 0;
+						ArrayList<FPThread> threads = new ArrayList<FPThread>();
+						FPThread currentThread = null;
 						
 						int eventType = parser.getEventType();
 						while ( eventType != XmlPullParser.END_DOCUMENT )
 						{
 							if ( eventType == XmlPullParser.START_TAG )
 							{
-								FPThread thread = threads[tid];
-								
 								if ( parser.getAttributeValue( null, "class" ) != null )
 								{
 									// Start of thread
 									if ( parser.getName().equals( "tr" ) )
 									{
-										threads[tid] = new FPThread();
+										currentThread = new FPThread();
+										threads.add( currentThread );
 										
-										threads[tid].pages = 1;
+										currentThread.pages = 1;
 										
 										String attributes = parser.getAttributeValue( null, "class" );
-										threads[tid].read = attributes.contains( "old" );
-										threads[tid].locked = attributes.contains( "lock" );
-										threads[tid].sticky = !attributes.contains( "nonsticky" );
+										currentThread.read = attributes.contains( "old" );
+										currentThread.locked = attributes.contains( "lock" );
+										currentThread.sticky = !attributes.contains( "nonsticky" );
 									} else
 									
 									// Title and attributes
 									if ( parser.getName().equals( "h3" ) && parser.getAttributeValue( null, "class" ).equals( "threadtitle" ) )
 									{
 										parser.next();
-										thread.id = Integer.parseInt( quickMatch( "([0-9]+)$", parser.getAttributeValue( null, "id" ) ) );									
+										currentThread.id = Integer.parseInt( quickMatch( "([0-9]+)$", parser.getAttributeValue( null, "id" ) ) );									
 										parser.next();
-										thread.title = parser.getText();
+										currentThread.title = parser.getText();
 									} else
 									
 									// Icon
 									if ( parser.getName().equals( "td" ) && parser.getAttributeValue( null, "class" ).contains( "threadicon" ) )
 									{
 										parser.next();
-										thread.icon = parser.getAttributeValue( null, "alt" ).toLowerCase();
+										currentThread.icon = parser.getAttributeValue( null, "alt" ).toLowerCase();
 									} else
 									
 									// Author
 									if ( parser.getName().equals( "div" ) && parser.getAttributeValue( null, "class" ).equals( "author" ) )
 									{
 										parser.next();
-										thread.author = new FPUser();
-										thread.author.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
+										currentThread.author = new FPUser();
+										currentThread.author.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
 										parser.next();
-										thread.author.name = parser.getText();
+										currentThread.author.name = parser.getText();
 									} else
 									
 									// Viewers
 									if ( parser.getName().equals( "span" ) && parser.getAttributeValue( null, "class" ).equals( "viewers" ) )
 									{
 										parser.next();
-										thread.readers = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
+										currentThread.readers = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
 									} else
 									
 									// New posts
@@ -313,7 +442,7 @@ public class APISession
 										parser.next();
 										parser.next();
 										parser.next();
-										thread.newPosts = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
+										currentThread.newPosts = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
 									} else
 									
 									// Thread replies
@@ -321,7 +450,7 @@ public class APISession
 									{
 										parser.next();
 										parser.next();
-										thread.posts = Integer.parseInt( parser.getText().replace( ",", "" ) );
+										currentThread.posts = Integer.parseInt( parser.getText().replace( ",", "" ) );
 									} else
 									
 									// Thread views
@@ -329,34 +458,32 @@ public class APISession
 									{
 										parser.next();
 										parser.next();
-										thread.views = Integer.parseInt( parser.getText().replace( ",", "" ) );
+										currentThread.views = Integer.parseInt( parser.getText().replace( ",", "" ) );
 									}
 								} else {
 									// Pages
 									if ( parser.getName().equals( "a" ) && parser.getAttributeValue( null, "href" ).startsWith( "threads/" ) )	
 									{
 										parser.next();
-										thread.pages = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
+										currentThread.pages = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
 									}
 								}
-							} else if ( eventType == XmlPullParser.END_TAG && parser.getName().equals( "tr" ) )
-							{
-								tid++;
 							}
 							
 							eventType = parser.next();
 						}
 						
-						FPThread[] newThreads = new FPThread[tid];
-						System.arraycopy( threads, 0, newThreads, 0, tid );
-						
-						callback.onResult( true, newThreads );
+						FPThread[] threadArray = new FPThread[threads.size()];
+						threads.toArray( threadArray );
+						callback.onResult( true, threadArray );
 					} catch ( XmlPullParserException e )
 					{
 						Log.e( "XMLError", e.toString() );
+						callback.onResult( false, null );
 					} catch ( IOException e )
 					{
 						Log.e( "DEB", "It's the apocalypse!" );
+						callback.onResult( false, null );
 					}
 				} else {
 					callback.onResult( false, null );
@@ -420,70 +547,71 @@ public class APISession
 						XmlPullParser parser = factory.newPullParser();
 						parser.setInput( new StringReader( source ) );
 						
-						FPPost[] posts = new FPPost[40];
-						int pid = 0;
+						//FPPost[] posts = new FPPost[40];
+						//int pid = 0;
+						ArrayList<FPPost> posts = new ArrayList<FPPost>();
+						FPPost currentPost = null;
 						
 						int eventType = parser.getEventType();
 						while ( eventType != XmlPullParser.END_DOCUMENT )
 						{
 							if ( eventType == XmlPullParser.START_TAG )
 							{
-								FPPost post = posts[pid];
-								
 								if ( parser.getAttributeValue( null, "class" ) != null )
 								{
 									// Start of post
 									if ( parser.getName().equals( "li" ) )
 									{
-										posts[pid] = new FPPost();
+										currentPost = new FPPost();
+										posts.add( currentPost );
 										
-										posts[pid].id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "id" ) ) );
+										currentPost.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "id" ) ) );
 									} else
 									
 									// Time indication
 									if ( parser.getName().equals( "span" ) && parser.getAttributeValue( null, "class" ).equals( "date" ) )
 									{
 										parser.next();
-										post.date = parser.getText();
+										currentPost.date = parser.getText();
 									} else
 									
 									// Author
 									if ( parser.getName().equals( "a" ) && parser.getAttributeValue( null, "class" ).startsWith( "username" ) )
 									{
-										post.author = new FPUser();
-										post.author.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
-										post.author.name = quickMatch( "(.+) is (offline|invisible|online now)$", parser.getAttributeValue( null, "title" ) );
-										post.author.online = quickMatch( ".+ is (offline|invisible|online now)$", parser.getAttributeValue( null, "title" ) ).equals( "online" );
+										currentPost.author = new FPUser();
+										currentPost.author.id = Integer.parseInt( quickMatch( "([0-9]+)", parser.getAttributeValue( null, "href" ) ) );
+										currentPost.author.name = quickMatch( "(.+) is (offline|invisible|online now)$", parser.getAttributeValue( null, "title" ) );
+										currentPost.author.online = quickMatch( ".+ is (offline|invisible|online now)$", parser.getAttributeValue( null, "title" ) ).equals( "online" );
 										
 										parser.next();
 										
 										if ( parser.getName() == null )
-											post.author.rank = Rank.REGULAR;
+											currentPost.author.rank = Rank.REGULAR;
 										else if ( parser.getName().equals( "font" ) )
-											post.author.rank = Rank.BANNED;
+											currentPost.author.rank = Rank.BANNED;
 										else if ( parser.getName().equals( "strong" ) )
-											post.author.rank = Rank.GOLD;
+											currentPost.author.rank = Rank.GOLD;
 										else if ( parser.getName().equals( "span" ) )
-											post.author.rank = Rank.MODERATOR;
+											currentPost.author.rank = Rank.MODERATOR;
 									} else
 									
 									// Post contents
 									if ( parser.getName().equals( "blockquote" ) && parser.getAttributeValue( null, "class" ).contains( "postcontent" ) )
 									{
-										post.message = quickMatch( "<div id=\"post_message_" + post.id + "\"><blockquote[^<]+>([\\s\\S]*?)</blockquote>", source ).trim();
+										currentPost.message = quickMatch( "<div id=\"post_message_" + currentPost.id + "\"><blockquote[^<]+>([\\s\\S]*?)</blockquote>", source ).trim();
 									} else
 									
 									// Extra info (os, browser, flagdog)
 									if ( parser.getName().equals( "span" ) && parser.getAttributeValue( null, "class" ).contains( "postlinking" ) )
 									{
 										parser.next();
-										if ( parser.getName() != null && parser.getName().equals( "img" ) ) post.os = parser.getAttributeValue( null, "alt" );
+										if ( parser.getName() != null && parser.getName().equals( "img" ) ) currentPost.os = parser.getAttributeValue( null, "alt" );
 										parser.next();
 										parser.next();
-										if ( parser.getName() != null && parser.getName().equals( "img" ) ) post.browser = quickMatch( "/([^/]+)\\.(gif|png)", parser.getAttributeValue( null, "src" ) );
+										if ( parser.getName() != null && parser.getName().equals( "img" ) ) currentPost.browser = quickMatch( "/([^/]+)\\.(gif|png)", parser.getAttributeValue( null, "src" ) );
 										parser.next();
 										parser.next();
-										if ( parser.getName() != null && parser.getName().equals( "a" ) ) post.flagdog = quickMatch( "ipe=([a-z0-9]+)&", parser.getAttributeValue( null, "href" ) );
+										if ( parser.getName() != null && parser.getName().equals( "a" ) ) currentPost.flagdog = quickMatch( "ipe=([a-z0-9]+)&", parser.getAttributeValue( null, "href" ) );
 									} else
 									
 									// Rating results
@@ -501,7 +629,7 @@ public class APISession
 												parser.next();
 												parser.next();
 												int count = Integer.parseInt( parser.getText() );
-												post.ratings.put( Rating.fromString( rating ), count );
+												currentPost.ratings.put( Rating.fromString( rating ), count );
 												parser.next();
 												parser.next();
 												parser.next();
@@ -514,14 +642,15 @@ public class APISession
 									{
 										parser.next();
 										
-										while ( !parser.getName().equals( "div" ) )
+										while ( !parser.getName().equals( "div" ) && parser.getAttributeValue( null, "onclick" ) != null )
 										{
 											RateData rate = new RateData();
 											rate.id = Integer.parseInt( quickMatch( ", '([0-9]+)',", parser.getAttributeValue( null, "onclick" ) ) );
-											rate.code = quickMatch( ", '([a-z0-9]+)' )", parser.getAttributeValue( null, "onclick" ) );
+											rate.code = quickMatch( ", '([a-z0-9]+)' \\)", parser.getAttributeValue( null, "onclick" ) );
 											parser.next();
 											String name = parser.getAttributeValue( null, "alt" ).toLowerCase().replace( " ", "" );
-											post.ratingCodes.put( Rating.fromString( name ), rate );
+											currentPost.ratingCodes.put( Rating.fromString( name ), rate );
+											parser.next();
 											parser.next();
 											parser.next();
 										}
@@ -531,32 +660,30 @@ public class APISession
 									if ( parser.getAttributeValue( null, "id" ) != null && parser.getAttributeValue( null, "id" ).equals( "userstats" ) )
 									{
 										parser.next();
-										post.author.joinYear = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
-										post.author.joinMonth = quickMatch( "^([A-Za-z]+)", parser.getText() );
+										currentPost.author.joinYear = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
+										currentPost.author.joinMonth = quickMatch( "^([A-Za-z]+)", parser.getText() );
 										parser.next();
 										parser.next();
 										parser.next();
-										post.author.postCount = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText().replace( ",", "" ) ) );
+										currentPost.author.postCount = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText().replace( ",", "" ) ) );
 									}
 								}
-							} else if ( eventType == XmlPullParser.END_TAG && parser.getName().equals( "li" ) )
-							{
-								pid++;
 							}
 							
 							eventType = parser.next();
 						}
 						
-						FPPost[] newPosts = new FPPost[pid];
-						System.arraycopy( posts, 0, newPosts, 0, pid );
-						
-						callback.onResult( true, newPosts );
+						FPPost[] postArray = new FPPost[posts.size()];
+						posts.toArray( postArray );
+						callback.onResult( true, postArray );
 					} catch ( XmlPullParserException e )
 					{
 						Log.e( "XMLError", e.toString() );
+						callback.onResult( false, null );
 					} catch ( IOException e )
 					{
 						Log.e( "DEB", "It's the apocalypse!" );
+						callback.onResult( false, null );
 					}
 				} else {
 					callback.onResult( false, null );
