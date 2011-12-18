@@ -5,10 +5,8 @@ import nl.vertinode.facepunch.APISession.Forum;
 
 import nl.vertinode.facepunch.R;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FrontpageActivity extends Activity
+public class FrontpageActivity extends FPActivity
 {
 	// Used for restoring list
 	private class State
@@ -64,7 +62,7 @@ public class FrontpageActivity extends Activity
 		forumList.setGravity( Gravity.CENTER_VERTICAL );
 		
 		// Fetch main categories and forums
-		( (FPApp)getApplicationContext() ).api().listForums( new APISession.ForumCallback()
+		api.listForums( new APISession.ForumCallback()
 		{
 			public void onResult( boolean success, Category[] categories )
 			{
@@ -133,19 +131,5 @@ public class FrontpageActivity extends Activity
 			View separator = lastForum.findViewById( R.id.listSeparator );
 			separator.setBackgroundColor( Color.WHITE );
 		}
-	}
-	
-	// Show animated loading icon in ImageView
-	private void applyLoadingIcon( final ImageView iv )
-	{
-		iv.setImageResource( R.anim.loadingspinner );				
-		final AnimationDrawable loadingAnimation = (AnimationDrawable)iv.getDrawable();
-		iv.post( new Runnable()
-		{
-			public void run()
-			{
-				loadingAnimation.start();
-			}
-		} );
 	}
 }

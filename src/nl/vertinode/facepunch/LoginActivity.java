@@ -2,7 +2,6 @@ package nl.vertinode.facepunch;
 
 import nl.vertinode.facepunch.R;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,7 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class LoginActivity extends Activity
+public class LoginActivity extends FPActivity
 {	
 	// Used for restoring form input
 	private class State
@@ -28,6 +27,7 @@ public class LoginActivity extends Activity
 	{
 		// Load layout
 		super.onCreate( savedInstanceState );
+		suppressUserButton = true;
 		setContentView( R.layout.login );
 		
 		// Views
@@ -52,7 +52,7 @@ public class LoginActivity extends Activity
 				loginDialog.show();
 				
 				// Attempt logging in
-				( (FPApp)getApplicationContext() ).api().login( username, password, new APISession.LoginCallback()
+				api.login( username, password, new APISession.LoginCallback()
 				{
 					public void onResult( boolean success )
 					{
