@@ -11,17 +11,13 @@
     <!-- Internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".FPApp">
-        <!-- Activity dispatcher -->
-        <activity android:name=".DispatcherActivity" android:noHistory="true" android:theme="@android:style/Theme.Light.NoTitleBar"  android:windowSoftInputMode="stateHidden">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".FPApp">        
+        <!-- Login form -->
+        <activity android:name="nl.vertinode.facepunch.LoginActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        
-        <!-- Login form -->
-        <activity android:name="nl.vertinode.facepunch.LoginActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
         </activity>
 		
         <!-- Frontpage view -->
