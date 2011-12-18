@@ -7,7 +7,6 @@ import nl.vertinode.facepunch.R;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -37,12 +36,6 @@ public class FrontpageActivity extends Activity
 		// Load layout
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.frontpage );
-		
-		// Make sure this activity is restored when it is killed
-		SharedPreferences prefs = getPreferences( MODE_PRIVATE );
-	    SharedPreferences.Editor editor = prefs.edit();
-	    editor.putString( "lastActivity", getClass().getName() );
-	    editor.commit();
 		
 		// Restore forum list
 		final State data = (State)getLastNonConfigurationInstance();
