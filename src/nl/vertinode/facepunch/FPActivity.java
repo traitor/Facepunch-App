@@ -2,6 +2,7 @@ package nl.vertinode.facepunch;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * This is a base class for activites belonging to this application.
@@ -48,7 +50,7 @@ public class FPActivity extends Activity
 				public void onClick( View v )
 				{
 					// Show list of user actions
-					final CharSequence[] items = { "Log out" };
+					final CharSequence[] items = { getString( R.string.logout ) };
 
 					new AlertDialog.Builder( FPActivity.this )
 						.setTitle( api.username() )
@@ -59,7 +61,23 @@ public class FPActivity extends Activity
 						    	// Log out
 						        if ( item == 0 )
 						        {
-						        	startActivity( new Intent( FPActivity.this, LoginActivity.class ) );
+						        	final ProgressDialog logoutDialog = ProgressDialog.show( FPActivity.this, "", getString( R.string.loggingOut ), true );
+						        	logoutDialog.show();
+						        	
+						        	api.logout( new APISession.LogoutCallback()
+									{
+										public void onResult( boolean success )
+										{
+											logoutDialog.dismiss();
+											
+											if ( success )
+											{
+												startActivity( new Intent( FPActivity.this, LoginActivity.class ) );
+											} else {
+												Toast.makeText( FPActivity.this, getString( R.string.loggingOutFailed ), Toast.LENGTH_SHORT ).show();
+											}
+										}
+									} );
 						        }
 						    }
 						} )

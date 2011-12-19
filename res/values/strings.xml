@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">Facepunch</string>
     
+    <!-- Generic -->
+    <string name="logout">Log out</string>
+    <string name="loggingOut">Logging out...</string>
+    <string name="loggingOutFailed">Failed to log out! Please check your network connection or try again later.</string>
+    
     <!-- Login view -->
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -11,4 +16,7 @@
     <string name="failedLogin">Failed to log in with the specified username and password.</string>
     <string name="rememberPassword">Remember</string>
     <string name="forgetPassword">Not now</string>
+    
+    <!-- Frontpage view -->
+    <string name="frontpageLoadingFailed">Failed to load the forum list! Please check your network connection or try again later.</string>
 </resources>

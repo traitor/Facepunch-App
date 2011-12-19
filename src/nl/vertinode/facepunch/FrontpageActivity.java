@@ -74,7 +74,7 @@ public class FrontpageActivity extends FPActivity
 				{
 					populateList( categories );
 				} else {
-					Toast.makeText( FrontpageActivity.this, "Failed to load the forum list! Please check your network connection or try again later.", Toast.LENGTH_SHORT ).show();
+					Toast.makeText( FrontpageActivity.this, getString( R.string.frontpageLoadingFailed ), Toast.LENGTH_SHORT ).show();
 				}
 			}
 		} );

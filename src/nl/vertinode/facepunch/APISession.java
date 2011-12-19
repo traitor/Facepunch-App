@@ -245,6 +245,59 @@ public class APISession
 		} );
 	}
 	
+	// Logging out
+	public interface LogoutCallback
+	{
+		public void onResult( boolean success );
+	}
+	
+	/**
+	 * Sign out as the currently logged in user.
+	 * 
+	 * @author Overv
+	 * 
+	 * @param callback Function to pass the result to.
+	 */
+	public void logout( final LogoutCallback callback )
+	{
+		if ( !loggedIn() )
+		{
+			callback.onResult( false );
+			return;
+		}
+		
+		asyncWebRequest( "login.php?do=logout", "securitytoken=" + securityToken, new WebRequestCallback()
+		{
+			public void onResult( String source, String cookies )
+			{
+				if ( source != null && source.contains( "logouthash" ) )
+				{
+					String hash = quickMatch( "logouthash=([a-z0-9-]+)", source );
+					
+					// Now that we have the hash, we can actually log out
+					asyncWebRequest( "login.php?do=logout&logouthash=" + hash, "securitytoken=" + securityToken, new WebRequestCallback()
+					{
+						public void onResult( String source, String cookies )
+						{
+							if ( source != null && source.contains( "All cookies cleared!" ) )
+							{
+								callback.onResult( true );
+								
+								username = null;
+								bb_password = null;
+								bb_userid = -1;
+							} else {
+								callback.onResult( false );
+							}
+						}
+					} );
+				} else {
+					callback.onResult( false );
+				}
+			}
+		} );
+	}
+	
 	// Forum listing
 	public interface ForumCallback
 	{
@@ -914,7 +967,7 @@ public class APISession
 	private class WebRequest extends AsyncTask<Object, Void, Object[]>
 	{
 		protected Object[] doInBackground( Object... params )
-		{			
+		{
 			String request = "http://www.facepunch.com/" + (String)params[0];
 			String postBody = (String)params[1];
 			WebRequestCallback callback = (WebRequestCallback)params[2];
