@@ -1,16 +1,18 @@
 package nl.vertinode.facepunch;
 
+
 import nl.vertinode.facepunch.APISession.Category;
 import nl.vertinode.facepunch.APISession.Forum;
-
-import nl.vertinode.facepunch.R;
+import nl.vertinode.testing.facepunch.R;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -114,6 +116,7 @@ public class FrontpageActivity extends FPActivity
 			{
 				LinearLayout forumItem = (LinearLayout)inflater.inflate( R.layout.listforum, forumList, false );
 				( (TextView)forumItem.findViewById( R.id.forumTitle ) ).setText( forum.getName() );
+				( (TextView)forumItem.findViewById( R.id.forumTitle ) ).setTag(forum);
 				
 				// Attempt to find icon for this forum
 				int resId = getResources().getIdentifier( "drawable/forumicon_" + forum.getId(), "drawable", getPackageName() );
@@ -124,6 +127,17 @@ public class FrontpageActivity extends FPActivity
 					iconView.setVisibility( View.INVISIBLE );
 				
 				forumList.addView( forumItem );
+				forumItem.setOnClickListener( new OnClickListener()
+				{
+					public void onClick( View v )
+					{
+						TextView tv = (TextView)v.findViewById( R.id.forumTitle );
+						
+						Intent intent = new Intent(FrontpageActivity.this, ForumActivity.class);
+						intent.putExtra("forum_id", ((Forum)tv.getTag()).getId());
+						startActivity(intent);
+					}
+				} );
 				lastForum = forumItem;
 			}
 			

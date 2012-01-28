@@ -9,8 +9,7 @@
 	<!-- Content -->
 	<LinearLayout
 	    android:layout_width="fill_parent"
-	    android:layout_height="45dp"
-	    android:orientation="horizontal">
+	    android:layout_height="45dp" android:orientation="horizontal">
 	    
 	    <!-- Icon -->
 	    <ImageView
@@ -32,6 +31,7 @@
 		    android:ellipsize="end"
 		    android:textColor="#7b7b7b"
 		    android:textSize="17dp"
+		    android:text="Forum Title"
 		     />
 	</LinearLayout>
 	

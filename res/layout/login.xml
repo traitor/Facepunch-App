@@ -57,15 +57,25 @@
 			    android:inputType="textPassword"
 			    android:textColor="#666"
 			    android:textSize="14dp" />
-			
-			<Button
-			    android:id="@+id/loginButton"
-			    android:layout_width="120dp"
-			    android:layout_height="35dp"
-			    android:layout_marginBottom="5dp"
-			    android:background="@drawable/bluebutton"
-			    android:textColor="#fff"
-			    android:text="@string/login" />
+			<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="true">
+				<Button
+				    android:id="@+id/loginButton"
+				    android:layout_width="120dp"
+				    android:layout_height="35dp"
+				    android:layout_marginBottom="5dp"
+				    android:background="@drawable/bluebutton"
+				    android:textColor="#fff"
+				    android:text="@string/login" android:layout_gravity="bottom"/>
+				<CheckBox 
+					android:id="@+id/autoLoginCheckbox" 
+					android:layout_width="wrap_content" 
+					android:text="Auto Login" 
+					android:layout_height="wrap_content" 
+					android:textSize="14dp" 
+					android:layout_gravity="top" 
+					android:layout_marginLeft="6dip" 
+					android:layout_marginBottom="6dip"></CheckBox>
+			</LinearLayout>
 		</LinearLayout>
 		</ScrollView>
 	</LinearLayout>

@@ -1,10 +1,12 @@
 package nl.vertinode.facepunch;
 
+import nl.vertinode.testing.facepunch.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -72,6 +74,8 @@ public class FPActivity extends Activity
 											
 											if ( success )
 											{
+												Intent intent = new Intent( FPActivity.this, LoginActivity.class );
+												intent.putExtra("reset", true);
 												startActivity( new Intent( FPActivity.this, LoginActivity.class ) );
 											} else {
 												Toast.makeText( FPActivity.this, getString( R.string.loggingOutFailed ), Toast.LENGTH_SHORT ).show();

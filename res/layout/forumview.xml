@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frontpage layout -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+    
+	<!-- Header -->
+	<include layout="@layout/header" />
+	
+	<!-- Login form -->
+	<ScrollView
+	    android:id="@+id/scroller"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="1"
+	    android:fillViewport="true">
+		
+		<LinearLayout
+		    android:id="@+id/threadList"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingLeft="17dp"
+		    android:paddingRight="17dp"
+		    android:paddingTop="6dp"
+		    android:paddingBottom="5dp"
+		    android:orientation="vertical"
+		    android:background="@drawable/background_striped">
+			
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>
