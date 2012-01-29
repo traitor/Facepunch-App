@@ -1,9 +1,6 @@
 package nl.vertinode.facepunch;
 
-import nl.vertinode.facepunch.APISession.Category;
-import nl.vertinode.facepunch.APISession.FPPost;
 import nl.vertinode.facepunch.APISession.FPThread;
-import nl.vertinode.facepunch.APISession.Forum;
 import nl.vertinode.facepunch.R;
 import android.content.Context;
 import android.content.Intent;
@@ -17,29 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class ForumActivity extends FPActivity {
-	
-	// Used for restoring list
-	private class State
-	{
-		Category[] categories;
-		int scrollY;
-	}
-	
-	//private Forum forum;
 	private int forumId = 6;
 	private int page = 1;
 	private String forumName = "";
 	private FPThread[] displayedThreads;
-	
-	/*public ForumActivity(Forum forum)
-	{
-		this.forum = forum;
-	}*/
 	
 	@Override
 	public void onCreate( Bundle savedInstanceState )
@@ -54,24 +36,6 @@ public class ForumActivity extends FPActivity {
 			forumName = extras.getString("forum_name");
 			if (extras.containsKey("page"))
 				page = extras.getInt("page");
-		}
-		
-		// Restore thread list
-		final State data = (State)getLastNonConfigurationInstance();
-		if ( data != null )
-		{
-			/*populateList( data.categories );
-			
-			final ScrollView scroller = (ScrollView)findViewById( R.id.scroller );
-			scroller.post( new Runnable()
-			{
-				public void run()
-				{
-					scroller.scrollTo( 0, data.scrollY );
-				}
-			} );*/
-			
-			return;
 		}
 		
 		// Show loading spinner
@@ -135,6 +99,9 @@ public class ForumActivity extends FPActivity {
 						
 						Intent intent = new Intent(ForumActivity.this, ThreadActivity.class);
 						intent.putExtra("thread_id", thread.getId());
+						intent.putExtra("thread_title", thread.getTitle());
+						intent.putExtra("page", 1); //todo: latest post, etc.
+						intent.putExtra("page_count", thread.pageCount());
 						startActivity(intent);
 					}
 			});

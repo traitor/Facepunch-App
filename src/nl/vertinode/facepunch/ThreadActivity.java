@@ -3,6 +3,7 @@ package nl.vertinode.facepunch;
 import nl.vertinode.facepunch.APISession.FPPost;
 import nl.vertinode.facepunch.APISession.FPThread;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,7 +20,10 @@ import android.widget.Toast;
 
 public class ThreadActivity extends FPActivity {
 	
+	private String threadTitle = "";
 	private int threadId = -1;
+	private int page = 1;
+	private int pageCount = 1;
 	
 	@Override
 	public void onCreate( Bundle savedInstanceState )
@@ -29,7 +34,10 @@ public class ThreadActivity extends FPActivity {
 		
 		Bundle extras = getIntent().getExtras(); 
 		if (extras != null) {
+			threadTitle = extras.getString("thread_title");
 			threadId = extras.getInt("thread_id");
+			page = extras.getInt("page");
+			pageCount = extras.getInt("page_count");
 		}
 		
 		// Show loading spinner
@@ -49,7 +57,7 @@ public class ThreadActivity extends FPActivity {
 				if (success)
 					populateThread(posts);
 				else
-					Toast.makeText( ThreadActivity.this, getString( R.string.forumLoadingFail ), Toast.LENGTH_SHORT ).show();
+					Toast.makeText( ThreadActivity.this, getString( R.string.threadLoadFail ), Toast.LENGTH_SHORT ).show();
 			}
 		});
 	}
@@ -59,7 +67,7 @@ public class ThreadActivity extends FPActivity {
 		LinearLayout postList = (LinearLayout)findViewById( R.id.postList );
 		
 		LinearLayout header = (LinearLayout)inflater.inflate( R.layout.listheader, postList, false );
-		( (TextView)header.findViewById( R.id.headerTitle ) ).setText( "No thread title yet" );
+		( (TextView)header.findViewById( R.id.headerTitle ) ).setText( threadTitle );
 		postList.addView( header );
 		
 		// Populate list with results
@@ -88,5 +96,39 @@ public class ThreadActivity extends FPActivity {
 			
 			postList.addView( postView );
 		}
+		
+		RelativeLayout changePage = (RelativeLayout)inflater.inflate(R.layout.changepage, postList, false);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Page ").append(page).append("/").append(pageCount);
+		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
+		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener()
+		{
+			public void onClick( View v )
+			{
+				if (page <= 1)
+					return;
+				Intent intent = new Intent(ThreadActivity.this, ThreadActivity.class);
+				intent.putExtra("thread_id", threadId);
+				intent.putExtra("thread_title", threadTitle);
+				intent.putExtra("page", page - 1);
+				intent.putExtra("page_count", pageCount);
+				startActivity(intent);
+			}
+		});
+		((Button)changePage.findViewById(R.id.nextPage)).setOnClickListener(new OnClickListener()
+		{
+			public void onClick( View v )
+			{
+				if (page + 1 > pageCount)
+					return;
+				Intent intent = new Intent(ThreadActivity.this, ThreadActivity.class);
+				intent.putExtra("thread_id", threadId);
+				intent.putExtra("thread_title", threadTitle);
+				intent.putExtra("page", page + 1);
+				intent.putExtra("page_count", pageCount);
+				startActivity(intent);
+			}
+		});
+		postList.addView(changePage);
 	}
 }

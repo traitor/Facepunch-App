@@ -418,7 +418,7 @@ public class APISession
 		{
 			public void onResult( String source, String cookies )
 			{
-				if ( source != null /*&& source.contains( "<div id=\"threadlist\" class=\"threadlist\">" )*/ )
+				if ( source != null && source.contains( "<div id=\"threadlist\" class=\"threadlist\">" ) )
 				{
 					// Fetch relevant part of the page
 					source = quickMatch( "(<tbody[\\s\\S]*tbody>)", source );

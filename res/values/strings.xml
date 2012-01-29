@@ -20,4 +20,5 @@
     <!-- Frontpage view -->
     <string name="frontpageLoadingFailed">Failed to load the forum list! Please check your network connection or try again later.</string>
     <string name="forumLoadingFail">Failed to load the thread list! Please check your network connection or try again later.</string>
+    <string name="threadLoadFail">Failed to load the thread! Please check your network connection or try again later.</string>
 </resources>
