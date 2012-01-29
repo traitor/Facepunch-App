@@ -11,7 +11,7 @@
     <View
 	    android:id="@+id/listSeparator"
 	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
+	    android:layout_height="2dp"
 	    android:background="#e4e4e4"
 	    android:layout_below="@+id/postContent" android:layout_alignParentLeft="true" android:layout_marginTop="5dip"/>
     <TextView android:text="2 posts" android:id="@+id/postCountText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/joinDateText" android:layout_alignLeft="@+id/joinDateText"></TextView>

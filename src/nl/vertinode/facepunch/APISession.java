@@ -667,6 +667,7 @@ public class APISession
 										if ( parser.getName() != null && parser.getName().equals( "img" ) ) currentPost.os = parser.getAttributeValue( null, "alt" );
 										parser.next();
 										parser.next();
+										//Not all posts have these values
 										if ( parser.getName() != null && parser.getName().equals( "img" ) ) if (parser.getAttributeValue( null, "src" ) != null) currentPost.browser = quickMatch( "/([^/]+)\\.(gif|png)", parser.getAttributeValue( null, "src" ) );
 										parser.next();
 										parser.next();
@@ -720,7 +721,7 @@ public class APISession
 									{
 										parser.next();
 										currentPost.author.joinYear = Integer.parseInt( quickMatch( "([0-9]+)", parser.getText() ) );
-										currentPost.author.joinMonth = quickMatch( "^([A-Za-z]+)", parser.getText() );
+										currentPost.author.joinMonth = quickMatch( "([A-Za-z]+)", parser.getText() );
 										parser.next();
 										parser.next();
 										parser.next();

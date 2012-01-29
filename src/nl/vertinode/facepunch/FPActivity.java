@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -52,7 +51,7 @@ public class FPActivity extends Activity
 				public void onClick( View v )
 				{
 					// Show list of user actions
-					final CharSequence[] items = { getString( R.string.logout ) };
+					final CharSequence[] items = { getString(R.string.preferences), getString(R.string.logout) };
 
 					new AlertDialog.Builder( FPActivity.this )
 						.setTitle( api.username() )
@@ -60,9 +59,10 @@ public class FPActivity extends Activity
 						{
 						    public void onClick( DialogInterface dialog, int item )
 						    {
-						    	// Log out
-						        if ( item == 0 )
-						        {
+						    	if ( item == 0 ) { // Preferences
+						    		Intent intent = new Intent( FPActivity.this, PreferencesActivity.class );
+									startActivity(intent);
+						    	} else if ( item == 1 ) { // Log out
 						        	final ProgressDialog logoutDialog = ProgressDialog.show( FPActivity.this, "", getString( R.string.loggingOut ), true );
 						        	logoutDialog.show();
 						        	
@@ -72,11 +72,10 @@ public class FPActivity extends Activity
 										{
 											logoutDialog.dismiss();
 											
-											if ( success )
-											{
+											if (success) {
 												Intent intent = new Intent( FPActivity.this, LoginActivity.class );
 												intent.putExtra("reset", true);
-												startActivity( new Intent( FPActivity.this, LoginActivity.class ) );
+												startActivity(intent);
 											} else {
 												Toast.makeText( FPActivity.this, getString( R.string.loggingOutFailed ), Toast.LENGTH_SHORT ).show();
 											}

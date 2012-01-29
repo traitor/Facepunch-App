@@ -21,7 +21,6 @@ public class ForumActivity extends FPActivity {
 	private int forumId = 6;
 	private int page = 1;
 	private String forumName = "";
-	private FPThread[] displayedThreads;
 	
 	@Override
 	public void onCreate( Bundle savedInstanceState )
@@ -61,10 +60,7 @@ public class ForumActivity extends FPActivity {
 		} );
 	}
 	
-	public void populateThreads( FPThread[] threads )
-	{
-		displayedThreads = threads;
-		
+	public void populateThreads( FPThread[] threads ) {
 		LayoutInflater inflater = (LayoutInflater)getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		LinearLayout threadList = (LinearLayout)findViewById( R.id.threadList );
 		
@@ -86,9 +82,11 @@ public class ForumActivity extends FPActivity {
 			( (TextView)threadView.findViewById( R.id.threadTitle ) ).setText( thread.getTitle() );
 			
 			StringBuilder sb = new StringBuilder();
-			sb.append(thread.getAuthor().getName()).append(" • ").append(thread.postCount()).append((thread.postCount() == 1 ? " reply" : " replies"));
+			sb.append(thread.getAuthor().getName()).append(" • ").append(thread.postCount());
+			sb.append(" ").append((thread.postCount() == 1 ? getString(R.string.replySingular) : getString(R.string.replyPlural)));
+			
 			if (thread.readerCount() > 0)
-				sb.append(" • ").append(thread.readerCount()).append(" viewing");
+				sb.append(" • ").append(thread.readerCount()).append(" ").append(getString(R.string.viewing));
 			( (TextView)threadView.findViewById( R.id.threadInfo ) ).setText( sb.toString() );
 			
 			threadView.setOnClickListener(new OnClickListener()
@@ -110,7 +108,7 @@ public class ForumActivity extends FPActivity {
 		}
 		RelativeLayout changePage = (RelativeLayout)inflater.inflate(R.layout.changepage, threadList, false);
 		StringBuilder sb = new StringBuilder();
-		sb.append("Page ").append(page);
+		sb.append(getString(R.string.page)).append(" ").append(page);
 		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
 		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener()
 		{

@@ -30,5 +30,9 @@
         <!-- Thread view -->
         <activity android:name="nl.vertinode.facepunch.ThreadActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
         </activity>
+        
+        <!-- Prefs -->
+        <activity android:name="nl.vertinode.facepunch.PreferencesActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
+        </activity>
     </application>
 </manifest>

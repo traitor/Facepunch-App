@@ -21,4 +21,11 @@
     <string name="frontpageLoadingFailed">Failed to load the forum list! Please check your network connection or try again later.</string>
     <string name="forumLoadingFail">Failed to load the thread list! Please check your network connection or try again later.</string>
     <string name="threadLoadFail">Failed to load the thread! Please check your network connection or try again later.</string>
+    <string name="preferences">Preferences</string>
+    <string name="autologin">Auto Login</string>
+    <string name="replySingular"> reply</string>
+    <string name="replyPlural"> replies</string>
+    <string name="viewing"> viewing</string>
+    <string name="page">Page </string>
+    <string name="posts"> posts</string>
 </resources>

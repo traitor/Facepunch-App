@@ -1,22 +1,33 @@
 package nl.vertinode.facepunch;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.xml.sax.XMLReader;
+
 import nl.vertinode.facepunch.APISession.FPPost;
-import nl.vertinode.facepunch.APISession.FPThread;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.text.Editable;
+import android.text.Html;
 
 public class ThreadActivity extends FPActivity {
 	
@@ -81,10 +92,10 @@ public class ThreadActivity extends FPActivity {
 			
 			((TextView)postView.findViewById( R.id.joinDateText ) ).setText(sb.toString());
 			sb = new StringBuilder();
-			sb.append(post.getAuthor().getPostCount()).append(" posts");
+			sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
 			((TextView)postView.findViewById( R.id.postCountText ) ).setText(sb.toString());
-			((TextView)postView.findViewById( R.id.postContent ) ).setText(post.getMessageHTML());
-			
+			((TextView)postView.findViewById( R.id.postContent ) ).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
+
 			api.getAvatar(post.getAuthor().getId(), new APISession.AvatarCallback() {
 				public void onResult(boolean success, Bitmap avatar) {
 					if (avatar == null)
@@ -94,12 +105,11 @@ public class ThreadActivity extends FPActivity {
 				}
 			});
 			
-			postList.addView( postView );
+			postList.addView(postView );
 		}
-		
 		RelativeLayout changePage = (RelativeLayout)inflater.inflate(R.layout.changepage, postList, false);
 		StringBuilder sb = new StringBuilder();
-		sb.append("Page ").append(page).append("/").append(pageCount);
+		sb.append(getString(R.string.page)).append(" ").append(page).append("/").append(pageCount);
 		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
 		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener()
 		{
@@ -130,5 +140,31 @@ public class ThreadActivity extends FPActivity {
 			}
 		});
 		postList.addView(changePage);
+	}
+	
+	class ImageGetter implements Html.ImageGetter {
+		public Drawable getDrawable(String source) {
+			Bitmap img = null;
+			
+			try
+			{
+				URL url = new URL(source);
+				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+				conn.setInstanceFollowRedirects( true );
+				conn.setDoInput( true );
+				conn.connect();
+				
+				img = BitmapFactory.decodeStream( conn.getInputStream() );
+			} catch ( IOException e ) {}
+			Drawable d = new BitmapDrawable(img);
+			d.setBounds(0, 0, 250, 250);
+			return img != null ? d : null;
+		}
+	}
+	
+	class TagHandler implements Html.TagHandler {
+		public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+			
+		}
 	}
 }
