@@ -1,8 +1,8 @@
 package nl.vertinode.facepunch;
 
 
-import nl.vertinode.facepunch.APISession.Category;
-import nl.vertinode.facepunch.APISession.Forum;
+import nl.vertinode.facepunch.FacepunchAPI.Category;
+import nl.vertinode.facepunch.FacepunchAPI.Forum;
 import nl.vertinode.facepunch.R;
 
 import android.content.Context;
@@ -64,7 +64,7 @@ public class FrontpageActivity extends FPActivity
 		forumList.setGravity( Gravity.CENTER_VERTICAL );
 		
 		// Fetch main categories and forums
-		api.listForums( new APISession.ForumCallback()
+		api.listForums( new FacepunchAPI.ForumCallback()
 		{
 			public void onResult( boolean success, Category[] categories )
 			{
@@ -72,9 +72,8 @@ public class FrontpageActivity extends FPActivity
 				forumList.removeView( loaderImage );
 				forumList.setGravity( Gravity.NO_GRAVITY );
 				
-				if ( success )
-				{
-					populateList( categories );
+				if (success) {
+					populateList(categories);
 				} else {
 					Toast.makeText( FrontpageActivity.this, getString( R.string.frontpageLoadingFailed ), Toast.LENGTH_SHORT ).show();
 				}
@@ -114,6 +113,8 @@ public class FrontpageActivity extends FPActivity
 			LinearLayout lastForum = null;
 			for ( Forum forum : cat.getForums() )
 			{
+				if (forum == null)
+					continue;
 				LinearLayout forumItem = (LinearLayout)inflater.inflate( R.layout.listforum, forumList, false );
 				( (TextView)forumItem.findViewById( R.id.forumTitle ) ).setText( forum.getName() );
 				forumItem.setTag(forum);

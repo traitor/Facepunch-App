@@ -6,7 +6,7 @@ import java.net.URL;
 
 import org.xml.sax.XMLReader;
 
-import nl.vertinode.facepunch.APISession.FPPost;
+import nl.vertinode.facepunch.FacepunchAPI.FPPost;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -61,7 +61,7 @@ public class ThreadActivity extends FPActivity {
 		postList.addView( loaderImage );
 		postList.setGravity( Gravity.CENTER_VERTICAL );
 		
-		api.listPosts(threadId, 1, new APISession.PostCallback() {
+		api.listPosts(threadId, 1, new FacepunchAPI.PostCallback() {
 			
 			public void onResult(boolean success, FPPost[] posts) {
 				postList.removeView( loaderImage );
@@ -98,7 +98,7 @@ public class ThreadActivity extends FPActivity {
 			((TextView)postView.findViewById( R.id.postCountText ) ).setText(sb.toString());
 			((TextView)postView.findViewById( R.id.postContent ) ).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
 
-			api.getAvatar(post.getAuthor().getId(), new APISession.AvatarCallback() {
+			api.getAvatar(post.getAuthor().getId(), new FacepunchAPI.AvatarCallback() {
 				public void onResult(boolean success, Bitmap avatar) {
 					if (avatar == null)
 						return;

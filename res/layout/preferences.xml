@@ -7,6 +7,8 @@
   
     <!-- Header -->
 	<include layout="@layout/header" />
-	<CheckBox android:text="CheckBox" android:id="@+id/checkBox1" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	
+	<CheckBox android:text="Enable Pictures" android:id="@+id/checkBox1" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+	<CheckBox android:text="Enable Pictures on Data" android:id="@+id/checkBox2" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 	
 </LinearLayout>

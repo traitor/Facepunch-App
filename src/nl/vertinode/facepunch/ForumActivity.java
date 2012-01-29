@@ -1,6 +1,6 @@
 package nl.vertinode.facepunch;
 
-import nl.vertinode.facepunch.APISession.FPThread;
+import nl.vertinode.facepunch.FacepunchAPI.FPThread;
 import nl.vertinode.facepunch.R;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +45,7 @@ public class ForumActivity extends FPActivity {
 		threadList.addView( loaderImage );
 		threadList.setGravity( Gravity.CENTER_VERTICAL );
 		
-		api.listThreads(forumId, page, new APISession.ThreadCallback() {
+		api.listThreads(forumId, page, new FacepunchAPI.ThreadCallback() {
 			public void onResult(boolean success, FPThread[] threads) {
 				// Remove loading spinner
 				threadList.removeView( loaderImage );

@@ -4,9 +4,9 @@ import android.app.Application;
 
 public class FPApp extends Application
 {
-	private final APISession session = new APISession();
+	private final FacepunchAPI session = new FacepunchAPI();
 	
-	public APISession api()
+	public FacepunchAPI api()
 	{
 		return session;
 	}

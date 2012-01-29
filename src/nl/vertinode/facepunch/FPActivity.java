@@ -21,7 +21,7 @@ import android.widget.Toast;
  */
 public class FPActivity extends Activity
 {
-	protected APISession api = null;
+	protected FacepunchAPI api = null;
 	
 	// Inheriting activities can prevent the user button from appearing, e.g. in the login activity
 	protected boolean suppressUserButton = false;
@@ -66,7 +66,12 @@ public class FPActivity extends Activity
 						        	final ProgressDialog logoutDialog = ProgressDialog.show( FPActivity.this, "", getString( R.string.loggingOut ), true );
 						        	logoutDialog.show();
 						        	
-						        	api.logout( new APISession.LogoutCallback()
+						        	api.logout();
+						        	Intent intent = new Intent( FPActivity.this, LoginActivity.class );
+									intent.putExtra("reset", true);
+									startActivity(intent);
+						        	
+						        	/*api.logout( new APISession.LogoutCallback()
 									{
 										public void onResult( boolean success )
 										{
@@ -80,7 +85,7 @@ public class FPActivity extends Activity
 												Toast.makeText( FPActivity.this, getString( R.string.loggingOutFailed ), Toast.LENGTH_SHORT ).show();
 											}
 										}
-									} );
+									} );*/
 						        }
 						    }
 						} )

@@ -1,5 +1,8 @@
 package nl.vertinode.facepunch;
 
+import nl.vertinode.facepunch.FacepunchAPI.Category;
+import nl.vertinode.facepunch.FacepunchAPI.LoginCallback;
+import nl.vertinode.facepunch.FacepunchAPI.LoginStatus;
 import nl.vertinode.facepunch.R;
 
 import android.app.AlertDialog;
@@ -99,16 +102,14 @@ public class LoginActivity extends FPActivity
 		final SharedPreferences prefs = getPreferences( MODE_PRIVATE );
 		loginDialog.show();
 		
-		api.login( username, password, new APISession.LoginCallback()
-		{
-			public void onResult( boolean success )
-			{
+		api.checkLogin( username, password, new FacepunchAPI.LoginCallback() {
+			public void onResult(LoginStatus status) {
 				loginDialog.dismiss();
 				
 				// Prepare frontpage opening intent
 				final Intent frontpageIntent = new Intent( LoginActivity.this, FrontpageActivity.class );
 				
-				if ( success )
+				if ( status.equals(LoginStatus.LOGIN_OK) )
 				{
 					// Always save this.
 					SharedPreferences.Editor editor = prefs.edit();
@@ -145,7 +146,7 @@ public class LoginActivity extends FPActivity
 					} else {
 						startActivity( frontpageIntent );
 					}
-				} else {
+				} else { //TODO: show different messages
 					// Show failed login message
 					new AlertDialog.Builder( LoginActivity.this )
 						.setMessage( getString( R.string.failedLogin ) )
