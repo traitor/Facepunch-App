@@ -418,7 +418,7 @@ public class APISession
 		{
 			public void onResult( String source, String cookies )
 			{
-				if ( source != null && source.contains( "<div id=\"threadlist\" class=\"threadlist\">" ) )
+				if ( source != null /*&& source.contains( "<div id=\"threadlist\" class=\"threadlist\">" )*/ )
 				{
 					// Fetch relevant part of the page
 					source = quickMatch( "(<tbody[\\s\\S]*tbody>)", source );
@@ -473,6 +473,7 @@ public class APISession
 									if ( parser.getName().equals( "td" ) && parser.getAttributeValue( null, "class" ).contains( "threadicon" ) )
 									{
 										parser.next();
+										if (parser.getAttributeValue( null, "alt" ) != null) //hack
 										currentThread.icon = parser.getAttributeValue( null, "alt" ).toLowerCase();
 									} else
 									
@@ -666,10 +667,10 @@ public class APISession
 										if ( parser.getName() != null && parser.getName().equals( "img" ) ) currentPost.os = parser.getAttributeValue( null, "alt" );
 										parser.next();
 										parser.next();
-										if ( parser.getName() != null && parser.getName().equals( "img" ) ) currentPost.browser = quickMatch( "/([^/]+)\\.(gif|png)", parser.getAttributeValue( null, "src" ) );
+										if ( parser.getName() != null && parser.getName().equals( "img" ) ) if (parser.getAttributeValue( null, "src" ) != null) currentPost.browser = quickMatch( "/([^/]+)\\.(gif|png)", parser.getAttributeValue( null, "src" ) );
 										parser.next();
 										parser.next();
-										if ( parser.getName() != null && parser.getName().equals( "a" ) ) currentPost.flagdog = quickMatch( "ipe=([a-z0-9]+)&", parser.getAttributeValue( null, "href" ) );
+										if ( parser.getName() != null && parser.getName().equals( "a" ) ) if (parser.getAttributeValue( null, "href" ) != null)  currentPost.flagdog = quickMatch( "ipe=([a-z0-9]+)&", parser.getAttributeValue( null, "href" ) );
 									} else
 									
 									// Rating results
@@ -744,6 +745,10 @@ public class APISession
 						callback.onResult( false, null );
 					}
 				} else {
+					if (source == null)
+						Log.e( "DEB", "fuc!" );
+					else if (!source.contains( "<ol id=\"posts\" class=\"posts\"" ))
+						Log.e( "DEB", source );
 					callback.onResult( false, null );
 				}
 			}
@@ -1009,7 +1014,7 @@ public class APISession
 				
 				// Get response text
 				InputStreamReader reader = new InputStreamReader( conn.getInputStream() );
-				char[] buffer = new char[10*1024];
+				char[] buffer = new char[65535];
 				int n = 0;
 				while ( n >= 0 )
 				{

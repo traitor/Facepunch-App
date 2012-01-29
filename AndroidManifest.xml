@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="1"
-    android:versionName="1.0" package="nl.vertinode.testing.facepunch">
+    android:versionName="1.0" package="nl.vertinode.facepunch">
     
     <!-- Android 2.2 -->
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8" />
@@ -20,11 +20,15 @@
         </activity>
 		
         <!-- Frontpage view -->
-        <activity android:name="nl.vertinode.testing.facepunch.FrontpageActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
+        <activity android:name="nl.vertinode.facepunch.FrontpageActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
         </activity>
         
         <!-- Forum view -->
         <activity android:name="nl.vertinode.facepunch.ForumActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
+        </activity>
+        
+        <!-- Thread view -->
+        <activity android:name="nl.vertinode.facepunch.ThreadActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
         </activity>
     </application>
 </manifest>

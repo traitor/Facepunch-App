@@ -1,6 +1,6 @@
 package nl.vertinode.facepunch;
 
-import nl.vertinode.testing.facepunch.R;
+import nl.vertinode.facepunch.R;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

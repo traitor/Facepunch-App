@@ -3,7 +3,7 @@ package nl.vertinode.facepunch;
 
 import nl.vertinode.facepunch.APISession.Category;
 import nl.vertinode.facepunch.APISession.Forum;
-import nl.vertinode.testing.facepunch.R;
+import nl.vertinode.facepunch.R;
 
 import android.content.Context;
 import android.content.Intent;
@@ -116,7 +116,7 @@ public class FrontpageActivity extends FPActivity
 			{
 				LinearLayout forumItem = (LinearLayout)inflater.inflate( R.layout.listforum, forumList, false );
 				( (TextView)forumItem.findViewById( R.id.forumTitle ) ).setText( forum.getName() );
-				( (TextView)forumItem.findViewById( R.id.forumTitle ) ).setTag(forum);
+				forumItem.setTag(forum);
 				
 				// Attempt to find icon for this forum
 				int resId = getResources().getIdentifier( "drawable/forumicon_" + forum.getId(), "drawable", getPackageName() );
@@ -131,10 +131,11 @@ public class FrontpageActivity extends FPActivity
 				{
 					public void onClick( View v )
 					{
-						TextView tv = (TextView)v.findViewById( R.id.forumTitle );
+						Forum forum = (Forum)v.getTag();
 						
 						Intent intent = new Intent(FrontpageActivity.this, ForumActivity.class);
-						intent.putExtra("forum_id", ((Forum)tv.getTag()).getId());
+						intent.putExtra("forum_id", forum.getId());
+						intent.putExtra("forum_name", forum.getName());
 						startActivity(intent);
 					}
 				} );
