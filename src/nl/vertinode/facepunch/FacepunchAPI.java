@@ -69,6 +69,8 @@ public class FacepunchAPI {
 		public String getJoinMonth() { return ""; }
 		public String getJoinYear() { return ""; }
 		public int getPostCount() { return 0; }
+		
+		//todo: ratings
 	}
 	
 	public class FPThread {
@@ -102,11 +104,6 @@ public class FacepunchAPI {
 		public boolean isSticky() { return false; /* return status.equals("sticky"); */ } //api currently return sall threads as stickied
 	}
 	
-	/*
-"ratings":
-	{"informative":1},
-"ratingkeys":{"agree":"5f03b97f4cb74b0a317a7f6bf2b0ae0d19282211","disagree":"54cf0c1c4f6478f990f67cbeac32ec17f2d41478","funny":"3cde450e48abba99d8fcb799f11c01f2d0dde840","winner":"e8d54f67403f1792cf2f750e51a1f601c527cfea","zing":"32700deefa97395eb0f1df185c0822f03fc44835","informative":"0181b9210da90e038117d270dd9d647ab701df2b","friendly":"5ab0a3f9ce19c3042695a0e5cf5887d85b144892","useful":"f8ca3b047f41b5389c29cc6c12d99e61ceb68ea2","programming_king":"21b4307f7b57d6032e56e226a85b8affd05f60f7","optimistic":"ea03e1088bc958f6983ac120adf0df6b39087ee2","artistic":"35cca6979da58d968f0d62ebf8fed3bd784aa4fd","late":"f3e3f11a24919d0eb7d3b760bf5f7d11f3cdc986","dumb":"130c2ccd214b42b6670ca38c0173632cc3c7d1f9"}},
-*/
 	public class FPPost {
 		private int id;
 		private FPUser author;
@@ -123,6 +120,34 @@ public class FacepunchAPI {
 		//todo: ratings & rating keys.
 	}
 	
+	public class PrivateMessage {
+		private int id;
+		private String title;
+		private FPUser author;
+		private long time;
+		private String date;
+		private String message;
+		private String status;
+		
+		public int getId() { return id; }
+		public String getTitle() { return title; }
+		public FPUser getAuthor() { return author; }
+		public long getTime() { return time; }
+		public String getDate() { return date; }
+		public String getMessage() { return message; }
+		public String getStatus() { return status; }
+	}
+	
+	public class FPIcon {
+		private int id;
+		private String name;
+		private String url;
+		
+		public int getId() { return id; }
+		public String getName() { return name; }
+		public String getUrl() { return url; }
+	}
+	
 	public interface LoginCallback
 	{
 		public void onResult(LoginStatus status);
@@ -131,7 +156,8 @@ public class FacepunchAPI {
 	public void checkLogin(String username, final String password, final LoginCallback callback) {
 		this.username = username;
 		this.password = MD5(password);
-		asyncWebRequest("?username=" + this.username + "&password=" + this.password +"&action=authenticate", new WebRequestCallback() {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=authenticate", new WebRequestCallback() {
 			public void onResult( String response, String cookies ) {
 				if (response == null) {
 					callback.onResult(LoginStatus.FAIL);
@@ -172,7 +198,8 @@ public class FacepunchAPI {
 	
 	public void listForums(final ForumCallback callback)
 	{
-		asyncWebRequest("?username=" + this.username + "&password=" + this.password +"&action=getforums", new WebRequestCallback()
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getforums", new WebRequestCallback()
 		{
 			public void onResult(String source, String cookies)
 			{
@@ -226,41 +253,14 @@ public class FacepunchAPI {
 	
 	public void listThreads( int forumId, int page, final ThreadCallback callback )
 	{
-		asyncWebRequest("?username=" + this.username + "&password=" + this.password +"&action=getthreads&forum_id=" + forumId + "&page=" + page, 
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getthreads&forum_id=" + forumId + "&page=" + page, 
 				new WebRequestCallback() {
 			public void onResult(String source, String cookies) {
 				JSONObject json;
 				try {
 					json = new JSONObject(source);
-					
-					JSONArray array = json.getJSONArray("threads");
-					FPThread[] threads = new FPThread[array.length()];
-					for (int i=0; i < array.length(); i++) {	
-						JSONObject e = array.getJSONObject(i);
-						FPThread thread = new FPThread();
-						thread.id = e.getInt("id");
-						thread.title = e.getString("title");
-						thread.icon = e.getString("icon");
-						thread.status = e.getString("status");
-						thread.pages = e.getInt("pages");
-						thread.reading = e.getInt("reading");
-						thread.replies = e.getInt("replies");
-						thread.views = e.getInt("views");
-						FPUser author = new FPUser();
-						author.id = e.getInt("authorid");
-						author.name = e.getString("author");
-						thread.author = author;
-						thread.lastPostId = e.getInt("lastpostid");
-						FPUser lastPostAuthor = new FPUser();
-						author.id = e.getInt("lastpostauthorid");
-						author.name = e.getString("lastpostauthorname");
-						thread.lastPostAuthor = lastPostAuthor;
-						thread.lastPostTime = e.getString("lastposttime");
-						if (e.has("newposts"))
-							thread.newPosts = e.getInt("newposts");
-						threads[i] = thread;
-					}
-					callback.onResult(true, threads);
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
 					return;
 				} catch (JSONException e) {
 					Log.e("JSONException", e.toString());
@@ -270,13 +270,80 @@ public class FacepunchAPI {
 		});
 	}
 	
+	public void listPopularThreads( final ThreadCallback callback )
+	{
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getpopularthreads", 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	public void listReadThreads( final ThreadCallback callback )
+	{
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getreadthreads", 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	private FPThread[] parseThreads(JSONArray array) throws JSONException {
+		FPThread[] threads = new FPThread[array.length()];
+		for (int i=0; i < array.length(); i++) {	
+			JSONObject e = array.getJSONObject(i);
+			FPThread thread = new FPThread();
+			thread.id = e.getInt("id");
+			thread.title = e.getString("title");
+			thread.icon = e.getString("icon");
+			thread.status = e.getString("status");
+			thread.pages = e.getInt("pages");
+			thread.reading = e.getInt("reading");
+			thread.replies = e.getInt("replies");
+			thread.views = e.getInt("views");
+			thread.author = new FPUser();
+			thread.author.id = e.getInt("authorid");
+			thread.author.name = e.getString("author");
+			thread.lastPostId = e.getInt("lastpostid");
+			thread.lastPostAuthor = new FPUser();
+			thread.lastPostAuthor.id = e.getInt("lastpostauthorid");
+			thread.lastPostAuthor.name = e.getString("lastpostauthorname");
+			thread.lastPostTime = e.getString("lastposttime");
+			if (e.has("newposts"))
+				thread.newPosts = e.getInt("newposts");
+			threads[i] = thread;
+		}
+		return threads;
+	}
+	
 	public interface PostCallback
 	{
 		public void onResult(boolean success, FPPost[] posts);
 	}
 	
 	public void listPosts(final int threadId, int page, final PostCallback callback) {
-		asyncWebRequest("?username=" + this.username + "&password=" + this.password +"&action=getposts&thread_id=" + threadId + "&page=" + page, 
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getposts&thread_id=" + threadId + "&page=" + page, 
 				new WebRequestCallback() {
 			public void onResult(String source, String cookies) {
 				JSONObject json;
@@ -304,6 +371,176 @@ public class FacepunchAPI {
 					Log.e("JSONException", e.toString());
 				}
 				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	public interface PMListCallback
+	{
+		public void onResult(boolean success, PrivateMessage[] pms);
+	}
+	
+	public void listPrivateMessages(int page, final PMListCallback callback) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password +
+				"&action=getpms&page=" + page, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					
+					JSONArray array = json.getJSONArray("posts");
+					PrivateMessage[] pms = new PrivateMessage[array.length()];
+					for (int i=0; i < array.length(); i++) {	
+						JSONObject e = array.getJSONObject(i);
+						PrivateMessage pm = new PrivateMessage();
+						pm.id = e.getInt("id");
+						pm.title = e.getString("title");
+						pm.author = new FPUser();
+						pm.author.name = e.getString("sender");
+						pm.author.id = e.getInt("senderid");
+						pm.time = e.getLong("time");
+						pms[i] = pm;
+					}
+					callback.onResult(true, pms);
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	public interface PMCallback
+	{
+		public void onResult(boolean success, PrivateMessage pm);
+	}
+	
+	public void getPrivateMessages(final int pmId, final PMCallback callback) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=getpm&pm_id=" + pmId, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					
+					PrivateMessage pm = new PrivateMessage();
+					pm.id = pmId;
+					pm.date = json.getString("date");
+					pm.author = new FPUser();
+					pm.author.name = json.getString("username");
+					pm.author.id = json.getInt("userid");
+					pm.author.title = json.getString("usertitle");
+					pm.message = json.getString("message");
+					pm.status = json.getString("status");
+					callback.onResult(true, pm);
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	public interface IconCallback
+	{
+		public void onResult(boolean success, FPIcon[] icons);
+	}
+	
+	public void getPmIcons(final IconCallback callback) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=getpmicons", 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					
+					callback.onResult(true, parseIcons(json.getJSONArray("icons")));
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	public void getThreadIcons(int forumId, final IconCallback callback) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=getthreadicons&forum_id=" + forumId, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				JSONObject json;
+				try {
+					json = new JSONObject(source);
+					
+					callback.onResult(true, parseIcons(json.getJSONArray("icons")));
+					return;
+				} catch (JSONException e) {
+					Log.e("JSONException", e.toString());
+				}
+				callback.onResult(false, null);
+			}
+		});
+	}
+	
+	private FPIcon[] parseIcons(JSONArray array) throws JSONException {
+		FPIcon[] icons = new FPIcon[array.length()];
+		for (int i=0; i < array.length(); i++) {	
+			JSONObject e = array.getJSONObject(i);
+			FPIcon icon = new FPIcon();
+			icon.id = e.getInt("id");
+			icon.name = e.getString("name");
+			icon.url = e.getString("url");
+			icons[i] = icon;
+		}
+		return icons;
+	}
+	
+	public void postReply(int threadId, String message/*, final PostReplyCallback callback*/) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=newreply&thread_id=" + threadId + "&message=" + message, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				/* todo */
+			}
+		});
+	}
+	
+	public void newThread(int forumId, String subject, String icon, String message/*, final NewThreadCallback callback*/) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=newthread&forum_id=" + forumId + "&subject=" + subject + "&body=" + message + "&icon=" + icon, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				/* todo */
+			}
+		});
+	}
+	
+	public void sendPm(String[] recipients, String subject, String body, String icon/*, final SendPMCallback callback*/) {
+		StringBuilder joined = new StringBuilder();
+		for (int i = 0; i < recipients.length; i++)
+			joined.append(recipients[i]).append(";");
+		joined.deleteCharAt(joined.length() - 1);
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=sendpm&recipients=" + joined.toString() + "&subject=" + subject + "&body=" + body + "&icon=" + icon, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				/* todo */
+			}
+		});
+	}
+	
+	public void ratePost(int postId, String rating, String key/*, final RatingCallback callback*/) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
+				"&action=rate&post_id=" + postId + "&rating=" + rating + "&key=" + key, 
+				new WebRequestCallback() {
+			public void onResult(String source, String cookies) {
+				/* todo */
 			}
 		});
 	}
