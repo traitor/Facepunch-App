@@ -7,6 +7,6 @@ import android.text.Html;
 
 public class TagHandler implements Html.TagHandler {
 	public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-		
+
 	}
 }

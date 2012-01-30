@@ -9,6 +9,6 @@ public class PreferencesActivity extends FPActivity {
 		// Load layout
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preferences);
-		
+
 	}
 }

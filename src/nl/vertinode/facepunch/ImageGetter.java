@@ -5,7 +5,7 @@ import android.text.Html;
 
 public class ImageGetter implements Html.ImageGetter {
 	public Drawable getDrawable(String source) {
-		return null; //temp.
+		return null; // temp.
 		/*if (source.startsWith("/fp/")) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("http://facepunch.com").append(source);
