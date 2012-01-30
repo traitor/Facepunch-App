@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * This is a base class for activites belonging to this application.
@@ -51,18 +50,19 @@ public class FPActivity extends Activity
 				public void onClick( View v )
 				{
 					// Show list of user actions
-					final CharSequence[] items = { getString(R.string.preferences), getString(R.string.logout) };
+					final CharSequence[] items = { "PMs", getString(R.string.preferences), getString(R.string.logout) };
 
 					new AlertDialog.Builder( FPActivity.this )
 						.setTitle( api.username() )
-						.setItems( items, new DialogInterface.OnClickListener()
-						{
-						    public void onClick( DialogInterface dialog, int item )
-						    {
-						    	if ( item == 0 ) { // Preferences
+						.setItems( items, new DialogInterface.OnClickListener() {
+						    public void onClick( DialogInterface dialog, int item ) {
+						    	if ( item == 0 ) { // PMs
+						    		Intent intent = new Intent( FPActivity.this, PMActivity.class );
+									startActivity(intent);
+						    	} else if ( item == 1 ) { // Preferences
 						    		Intent intent = new Intent( FPActivity.this, PreferencesActivity.class );
 									startActivity(intent);
-						    	} else if ( item == 1 ) { // Log out
+						    	} else if ( item == 2 ) { // Log out
 						        	final ProgressDialog logoutDialog = ProgressDialog.show( FPActivity.this, "", getString( R.string.loggingOut ), true );
 						        	logoutDialog.show();
 						        	

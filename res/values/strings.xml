@@ -28,4 +28,6 @@
     <string name="viewing"> viewing</string>
     <string name="page">Page </string>
     <string name="posts"> posts</string>
+    <string name="pmLoadFailed">Failed to load private messages! Please check your network connection or try again later.</string>
+    <string name="pmTitle">Private Messages</string>
 </resources>

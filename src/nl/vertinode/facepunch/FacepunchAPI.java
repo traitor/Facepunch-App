@@ -389,7 +389,7 @@ public class FacepunchAPI {
 				try {
 					json = new JSONObject(source);
 					
-					JSONArray array = json.getJSONArray("posts");
+					JSONArray array = json.getJSONArray("messages");
 					PrivateMessage[] pms = new PrivateMessage[array.length()];
 					for (int i=0; i < array.length(); i++) {	
 						JSONObject e = array.getJSONObject(i);
@@ -417,7 +417,7 @@ public class FacepunchAPI {
 		public void onResult(boolean success, PrivateMessage pm);
 	}
 	
-	public void getPrivateMessages(final int pmId, final PMCallback callback) {
+	public void getPrivateMessage(final int pmId, final PMCallback callback) {
 		asyncWebRequest("?username=" + this.username + "&password=" + this.password + 
 				"&action=getpm&pm_id=" + pmId, 
 				new WebRequestCallback() {
@@ -428,7 +428,7 @@ public class FacepunchAPI {
 					
 					PrivateMessage pm = new PrivateMessage();
 					pm.id = pmId;
-					pm.date = json.getString("date");
+					pm.date = json.getString("time");
 					pm.author = new FPUser();
 					pm.author.name = json.getString("username");
 					pm.author.id = json.getInt("userid");

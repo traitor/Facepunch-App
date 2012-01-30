@@ -1,25 +1,17 @@
 package nl.vertinode.facepunch;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import org.xml.sax.XMLReader;
 
 import nl.vertinode.facepunch.FacepunchAPI.FPPost;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.style.StrikethroughSpan;
 
 public class ThreadActivity extends FPActivity {
 	
@@ -142,36 +132,5 @@ public class ThreadActivity extends FPActivity {
 			}
 		});
 		postList.addView(changePage);
-	}
-	
-	class ImageGetter implements Html.ImageGetter {
-		public Drawable getDrawable(String source) {
-			if (source.startsWith("/fp/")) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("http://facepunch.com").append(source);
-				source = sb.toString();
-			}
-			Bitmap img = null;
-			try {
-				URL url = new URL(source);
-				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-				conn.setInstanceFollowRedirects( true );
-				conn.setDoInput( true );
-				conn.connect();
-				
-				img = BitmapFactory.decodeStream( conn.getInputStream() );
-			} catch ( IOException e ) { }
-			if (img == null)
-				return null;
-			Drawable d = new BitmapDrawable(img);
-			d.setBounds(0, 0, img.getWidth(), img.getHeight());
-			return d;
-		}
-	}
-	
-	class TagHandler implements Html.TagHandler {
-		public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-			
-		}
 	}
 }

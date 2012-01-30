@@ -22,10 +22,10 @@
 		    android:id="@+id/threadList"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:paddingLeft="2dp"
-		    android:paddingRight="2dp"
-		    android:paddingTop="2dp"
-		    android:paddingBottom="2dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+		    android:paddingTop="3dp"
+		    android:paddingBottom="3dp"
 		    android:orientation="vertical"
 		    android:background="@drawable/background_striped">
 			

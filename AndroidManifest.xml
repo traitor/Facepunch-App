@@ -34,5 +34,11 @@
         <!-- Prefs -->
         <activity android:name="nl.vertinode.facepunch.PreferencesActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
         </activity>
+        
+        <!-- Private Messages -->
+        <activity android:name="nl.vertinode.facepunch.PMActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity android:name="nl.vertinode.facepunch.ViewPMActivity" android:theme="@android:style/Theme.Light.NoTitleBar" android:windowSoftInputMode="stateHidden">
+        </activity>
     </application>
 </manifest>

@@ -1,7 +1,5 @@
 package nl.vertinode.facepunch;
 
-import nl.vertinode.facepunch.FacepunchAPI.Category;
-import nl.vertinode.facepunch.FacepunchAPI.LoginCallback;
 import nl.vertinode.facepunch.FacepunchAPI.LoginStatus;
 import nl.vertinode.facepunch.R;
 
