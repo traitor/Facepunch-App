@@ -19,7 +19,7 @@ import android.text.Html;
 
 public class ThreadActivity extends FPActivity {
 
-	private String threadTitle = "";
+	private String title = "";
 	private int threadId = -1;
 	private int page = 1;
 	private int pageCount = 1;
@@ -32,10 +32,8 @@ public class ThreadActivity extends FPActivity {
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			threadTitle = extras.getString("thread_title");
 			threadId = extras.getInt("thread_id");
 			page = extras.getInt("page");
-			pageCount = extras.getInt("page_count");
 		}
 
 		// Show loading spinner
@@ -47,10 +45,12 @@ public class ThreadActivity extends FPActivity {
 		postList.setGravity(Gravity.CENTER_VERTICAL);
 
 		api.listPosts(threadId, 1, new FacepunchAPI.PostCallback() {
-
-			public void onResult(boolean success, FPPost[] posts) {
+			public void onResult(boolean success, FPPost[] posts, String threadTitle, int numPage) {
 				postList.removeView(loaderImage);
 				postList.setGravity(Gravity.NO_GRAVITY);
+				
+				title = threadTitle;
+				pageCount = numPage;
 
 				if (success)
 					populateThread(posts);
@@ -65,19 +65,15 @@ public class ThreadActivity extends FPActivity {
 		LinearLayout postList = (LinearLayout)findViewById(R.id.postList);
 
 		LinearLayout header = (LinearLayout)inflater.inflate(R.layout.listheader, postList, false);
-		((TextView)header.findViewById(R.id.headerTitle)).setText(threadTitle);
+		((TextView)header.findViewById(R.id.headerTitle)).setText(title);
 		postList.addView(header);
 
 		// Populate list with results
 		for (FPPost post : posts) {
 			final RelativeLayout postView = (RelativeLayout)inflater.inflate(R.layout.post, postList, false);
 			((TextView)postView.findViewById(R.id.usernameText)).setText(post.getAuthor().getName());
-
+			((TextView)postView.findViewById(R.id.joinDateText)).setText(post.getAuthor().getJoinDate());
 			StringBuilder sb = new StringBuilder();
-			sb.append(post.getAuthor().getJoinMonth()).append(" ").append(post.getAuthor().getJoinYear());
-
-			((TextView)postView.findViewById(R.id.joinDateText)).setText(sb.toString());
-			sb = new StringBuilder();
 			sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
 			((TextView)postView.findViewById(R.id.postCountText)).setText(sb.toString());
 			((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
@@ -103,9 +99,7 @@ public class ThreadActivity extends FPActivity {
 					return;
 				Intent intent = new Intent(ThreadActivity.this, ThreadActivity.class);
 				intent.putExtra("thread_id", threadId);
-				intent.putExtra("thread_title", threadTitle);
 				intent.putExtra("page", page - 1);
-				intent.putExtra("page_count", pageCount);
 				startActivity(intent);
 			}
 		});
@@ -115,9 +109,7 @@ public class ThreadActivity extends FPActivity {
 					return;
 				Intent intent = new Intent(ThreadActivity.this, ThreadActivity.class);
 				intent.putExtra("thread_id", threadId);
-				intent.putExtra("thread_title", threadTitle);
 				intent.putExtra("page", page + 1);
-				intent.putExtra("page_count", pageCount);
 				startActivity(intent);
 			}
 		});

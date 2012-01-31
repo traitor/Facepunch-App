@@ -78,6 +78,8 @@ public class FacepunchAPI {
 		private int id;
 		private String name;
 		private String title;
+		private String joinDate;
+		private int postCount;
 
 		public int getId() {
 			return id;
@@ -90,18 +92,13 @@ public class FacepunchAPI {
 		public String getTitle() {
 			return name;
 		}
-
-		// todo: wait for api to add these
-		public String getJoinMonth() {
-			return "";
-		}
-
-		public String getJoinYear() {
-			return "";
+		
+		public String getJoinDate() {
+			return joinDate;
 		}
 
 		public int getPostCount() {
-			return 0;
+			return postCount;
 		}
 
 		// todo: ratings
@@ -121,6 +118,7 @@ public class FacepunchAPI {
 		private FPUser lastPostAuthor;
 		private String lastPostTime;
 		private int newPosts = 0;
+		private boolean locked = false;
 
 		public int getId() {
 			return id;
@@ -175,8 +173,12 @@ public class FacepunchAPI {
 		}
 
 		public boolean isSticky() {
-			return false; /* return status.equals("sticky"); */
-		} // api currently returns all threads as stickied
+			return status.equals("sticky");
+		}
+		
+		public boolean isLocked() {
+			return locked;
+		}
 	}
 
 	public class FPPost {
@@ -357,7 +359,7 @@ public class FacepunchAPI {
 	}
 
 	public interface ThreadCallback {
-		public void onResult(boolean success, FPThread[] threads);
+		public void onResult(boolean success, FPThread[] threads, int pageCount);
 	}
 
 	public void listThreads(int forumId, int page, final ThreadCallback callback) {
@@ -366,12 +368,12 @@ public class FacepunchAPI {
 				JSONObject json;
 				try {
 					json = new JSONObject(source);
-					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")), json.getInt("numpages"));
 					return;
 				} catch (JSONException e) {
 					Log.e("JSONException", e.toString());
 				}
-				callback.onResult(false, null);
+				callback.onResult(false, null, 0);
 			}
 		});
 	}
@@ -382,12 +384,12 @@ public class FacepunchAPI {
 				JSONObject json;
 				try {
 					json = new JSONObject(source);
-					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")), 1);
 					return;
 				} catch (JSONException e) {
 					Log.e("JSONException", e.toString());
 				}
-				callback.onResult(false, null);
+				callback.onResult(false, null, 0);
 			}
 		});
 	}
@@ -398,12 +400,12 @@ public class FacepunchAPI {
 				JSONObject json;
 				try {
 					json = new JSONObject(source);
-					callback.onResult(true, parseThreads(json.getJSONArray("threads")));
+					callback.onResult(true, parseThreads(json.getJSONArray("threads")), 1);
 					return;
 				} catch (JSONException e) {
 					Log.e("JSONException", e.toString());
 				}
-				callback.onResult(false, null);
+				callback.onResult(false, null, 0);
 			}
 		});
 	}
@@ -429,6 +431,7 @@ public class FacepunchAPI {
 			thread.lastPostAuthor.id = e.getInt("lastpostauthorid");
 			thread.lastPostAuthor.name = e.getString("lastpostauthorname");
 			thread.lastPostTime = e.getString("lastposttime");
+			thread.locked = e.getBoolean("locked");
 			if (e.has("newposts"))
 				thread.newPosts = e.getInt("newposts");
 			threads[i] = thread;
@@ -437,7 +440,7 @@ public class FacepunchAPI {
 	}
 
 	public interface PostCallback {
-		public void onResult(boolean success, FPPost[] posts);
+		public void onResult(boolean success, FPPost[] posts, String threadTitle, int pageCount);
 	}
 
 	public void listPosts(final int threadId, int page, final PostCallback callback) {
@@ -448,6 +451,8 @@ public class FacepunchAPI {
 					json = new JSONObject(source);
 
 					JSONArray array = json.getJSONArray("posts");
+					String title = json.getString("title");
+					int numPages = json.getInt("numpages");
 					FPPost[] posts = new FPPost[array.length()];
 					for (int i = 0; i < array.length(); i++) {
 						JSONObject e = array.getJSONObject(i);
@@ -457,17 +462,19 @@ public class FacepunchAPI {
 						post.author.id = e.getInt("userid");
 						post.author.name = e.getString("username");
 						post.author.title = e.getString("usertitle");
+						post.author.postCount = e.getInt("postcount");
+						post.author.joinDate = e.getString("joindate");
 						post.postTime = e.getString("time");
 						post.status = e.getString("status");
 						post.message = e.getString("message");
 						posts[i] = post;
 					}
-					callback.onResult(true, posts);
+					callback.onResult(true, posts, title, numPages);
 					return;
 				} catch (JSONException e) {
 					Log.e("JSONException", e.toString());
 				}
-				callback.onResult(false, null);
+				callback.onResult(false, null, "", 0);
 			}
 		});
 	}

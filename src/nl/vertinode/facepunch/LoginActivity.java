@@ -102,14 +102,18 @@ public class LoginActivity extends FPActivity {
 				final Intent frontpageIntent = new Intent(LoginActivity.this, FrontpageActivity.class);
 
 				if (status.equals(LoginStatus.LOGIN_OK)) {
-					// Always save this.
-					SharedPreferences.Editor editor = prefs.edit();
-					editor.putBoolean("autologin", autoLogin);
-					editor.commit();
-
 					// Ask the user if the successful login details should be
 					// saved
-					if (!username.equals(prefs.getString("username", "")) || !password.equals(prefs.getString("password", ""))) {
+					if (autoLogin && !prefs.getBoolean("autologin", false)) {
+						//Don't ask if you want to save password if autologin is checked
+						SharedPreferences.Editor editor = prefs.edit();
+						editor.putString("username", username);
+						editor.putString("password", password);
+						editor.putBoolean("autologin", autoLogin);
+						editor.commit();
+						
+						startActivity(frontpageIntent);
+					} else if (!username.equals(prefs.getString("username", "")) || !password.equals(prefs.getString("password", ""))) {
 						new AlertDialog.Builder(LoginActivity.this).setMessage(getString(R.string.successfulLoginRememberPassword)).setCancelable(true).setPositiveButton(getString(R.string.rememberPassword), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								SharedPreferences.Editor editor = prefs.edit();

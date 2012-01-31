@@ -20,6 +20,7 @@ import android.widget.Toast;
 public class ForumActivity extends FPActivity {
 	private int forumId = 6;
 	private int page = 1;
+	private int numPage = 1;
 	private String forumName = "";
 
 	@Override
@@ -45,10 +46,11 @@ public class ForumActivity extends FPActivity {
 		threadList.setGravity(Gravity.CENTER_VERTICAL);
 
 		api.listThreads(forumId, page, new FacepunchAPI.ThreadCallback() {
-			public void onResult(boolean success, FPThread[] threads) {
+			public void onResult(boolean success, FPThread[] threads, int pageCount) {
 				// Remove loading spinner
 				threadList.removeView(loaderImage);
 				threadList.setGravity(Gravity.NO_GRAVITY);
+				numPage = pageCount;
 
 				if (success) {
 					populateThreads(threads);
@@ -93,9 +95,7 @@ public class ForumActivity extends FPActivity {
 
 					Intent intent = new Intent(ForumActivity.this, ThreadActivity.class);
 					intent.putExtra("thread_id", thread.getId());
-					intent.putExtra("thread_title", thread.getTitle());
 					intent.putExtra("page", 1); // todo: latest post, etc.
-					intent.putExtra("page_count", thread.pageCount());
 					startActivity(intent);
 				}
 			});
@@ -104,7 +104,7 @@ public class ForumActivity extends FPActivity {
 		}
 		RelativeLayout changePage = (RelativeLayout)inflater.inflate(R.layout.changepage, threadList, false);
 		StringBuilder sb = new StringBuilder();
-		sb.append(getString(R.string.page)).append(" ").append(page);
+		sb.append(getString(R.string.page)).append(" ").append(page).append("/").append(numPage);
 		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
 		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -119,6 +119,8 @@ public class ForumActivity extends FPActivity {
 		});
 		((Button)changePage.findViewById(R.id.nextPage)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				if (page + 1 > numPage)
+					return;
 				Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
 				intent.putExtra("forum_id", forumId);
 				intent.putExtra("forum_name", forumName);
