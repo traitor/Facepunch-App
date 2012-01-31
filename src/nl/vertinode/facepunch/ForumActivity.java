@@ -2,7 +2,9 @@ package nl.vertinode.facepunch;
 
 import nl.vertinode.facepunch.FacepunchAPI.FPThread;
 import nl.vertinode.facepunch.R;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -79,6 +81,8 @@ public class ForumActivity extends FPActivity {
 			threadView.setTag(thread);
 			if (thread.isSticky())
 				threadView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xaa));
+			else if (thread.isLocked())
+				threadView.setBackgroundColor(Color.rgb(0xee, 0xee, 0xee));
 			((TextView)threadView.findViewById(R.id.threadTitle)).setText(thread.getTitle());
 
 			StringBuilder sb = new StringBuilder();
@@ -106,6 +110,27 @@ public class ForumActivity extends FPActivity {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getString(R.string.page)).append(" ").append(page).append("/").append(numPage);
 		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
+		((TextView)changePage.findViewById(R.id.pageCount)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				//Allow user to either select page or go to last page
+				final CharSequence[] items = { getString(R.string.selectPage), getString(R.string.lastPage) };
+
+				new AlertDialog.Builder(ForumActivity.this).setTitle(getString(R.string.changePageTitle)).setItems(items, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						if (item == 0) { // Select Page
+							
+						} else if (item == 1) { // Last Page
+							Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
+							intent.putExtra("forum_id", forumId);
+							intent.putExtra("forum_name", forumName);
+							intent.putExtra("page", numPage);
+							startActivity(intent);
+						}
+					}
+				}).create().show();
+			}
+		});
+		
 		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (page <= 1)

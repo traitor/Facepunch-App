@@ -1,7 +1,9 @@
 package nl.vertinode.facepunch;
 
 import nl.vertinode.facepunch.FacepunchAPI.FPPost;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -44,7 +46,7 @@ public class ThreadActivity extends FPActivity {
 		postList.addView(loaderImage);
 		postList.setGravity(Gravity.CENTER_VERTICAL);
 
-		api.listPosts(threadId, 1, new FacepunchAPI.PostCallback() {
+		api.listPosts(threadId, page, new FacepunchAPI.PostCallback() {
 			public void onResult(boolean success, FPPost[] posts, String threadTitle, int numPage) {
 				postList.removeView(loaderImage);
 				postList.setGravity(Gravity.NO_GRAVITY);
@@ -82,8 +84,8 @@ public class ThreadActivity extends FPActivity {
 				public void onResult(boolean success, Bitmap avatar) {
 					if (avatar == null)
 						return;
-					Bitmap resized = Bitmap.createScaledBitmap(avatar, 60, 60, false);
-					((ImageView)postView.findViewById(R.id.avatarView)).setImageBitmap(resized);
+					//Bitmap resized = Bitmap.createScaledBitmap(avatar, 64, 64, false);
+					((ImageView)postView.findViewById(R.id.avatarView)).setImageBitmap(avatar);
 				}
 			});
 
@@ -93,6 +95,26 @@ public class ThreadActivity extends FPActivity {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getString(R.string.page)).append(" ").append(page).append("/").append(pageCount);
 		((TextView)changePage.findViewById(R.id.pageCount)).setText(sb.toString());
+		((TextView)changePage.findViewById(R.id.pageCount)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				//Allow user to either select page or go to last page
+				final CharSequence[] items = { getString(R.string.selectPage), getString(R.string.lastPage) };
+
+				new AlertDialog.Builder(ThreadActivity.this).setTitle(getString(R.string.changePageTitle)).setItems(items, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						if (item == 0) { // Select Page
+							
+						} else if (item == 1) { // Last Page
+							Intent intent = new Intent(ThreadActivity.this, ThreadActivity.class);
+							intent.putExtra("thread_id", threadId);
+							intent.putExtra("page", pageCount);
+							startActivity(intent);
+						}
+					}
+				}).create().show();
+			}
+		});
+		
 		((Button)changePage.findViewById(R.id.previousPage)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (page <= 1)

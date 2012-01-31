@@ -9,16 +9,16 @@
 	    android:layout_marginBottom="5dp"
 	    android:background="@drawable/bluebutton"
 	    android:textColor="#fff"
-		android:text="Previous" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"></Button>
+		android:text="@string/previous" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"></Button>
     <Button android:id="@+id/nextPage" 
 		android:layout_width="70dp"
 	    android:layout_height="35dp"
 	    android:layout_marginBottom="5dp"
 	    android:background="@drawable/bluebutton"
 	    android:textColor="#fff"
-	    android:text="Next" 
+	    android:text="@string/next" 
 	    android:layout_alignParentTop="true" 
 	    android:layout_alignParentRight="true"></Button>
-    <TextView android:text="Page 1/1" android:id="@+id/pageCount" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:layout_marginTop="8dip"></TextView>
+    <TextView android:text="Page 1/1" android:layout_height="match_parent" android:id="@+id/pageCount" android:layout_width="wrap_content" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:layout_marginTop="8dip"></TextView>
     
 </RelativeLayout>

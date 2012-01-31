@@ -32,4 +32,9 @@
     <string name="privateMessagingTitle">Private Messages</string>
     <string name="failedLogin">Failed to login. Please check your network connection or try again later.</string>
     <string name="failedLoginNoCredentials">No username or password specified.</string>
+    <string name="changePageTitle">Change Page...</string>
+    <string name="selectPage">Choose Page</string>
+    <string name="lastPage">Last Page</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>

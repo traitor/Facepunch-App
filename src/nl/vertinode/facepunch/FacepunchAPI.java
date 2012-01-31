@@ -453,6 +453,8 @@ public class FacepunchAPI {
 					JSONArray array = json.getJSONArray("posts");
 					String title = json.getString("title");
 					int numPages = json.getInt("numpages");
+					if (numPages == 0)
+						numPages = 1;
 					FPPost[] posts = new FPPost[array.length()];
 					for (int i = 0; i < array.length(); i++) {
 						JSONObject e = array.getJSONObject(i);

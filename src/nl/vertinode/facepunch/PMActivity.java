@@ -68,7 +68,6 @@ public class PMActivity extends FPActivity {
 			LinearLayout pmView = (LinearLayout)inflater.inflate(R.layout.listthread, pmList, false);
 			pmView.setTag(pm);
 			((TextView)pmView.findViewById(R.id.threadTitle)).setText(pm.getTitle());
-
 			StringBuilder sb = new StringBuilder();
 			sb.append(pm.getAuthor().getName()).append(" • ").append(timestampToDate(pm.getTime()));
 			((TextView)pmView.findViewById(R.id.threadInfo)).setText(sb.toString());
