@@ -1,18 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <ImageView android:layout_height="64dip" android:id="@+id/avatarView" android:layout_width="64dip" android:src="@drawable/fp_icon" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_marginLeft="5dip" android:layout_marginTop="5dip"></ImageView>
-    <TextView android:text="Username" android:id="@+id/usernameText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/avatarView" android:layout_marginLeft="5dip"></TextView>
-    <TextView android:text="11/09/01" android:id="@+id/joinDateText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/usernameText" android:layout_alignLeft="@+id/usernameText"></TextView>
-    <TextView android:text="Posts stuffz" android:autoLink="web" android:id="@+id/postContent" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/avatarView" android:layout_alignParentLeft="true" android:layout_marginLeft="3dip" android:layout_marginTop="5dip"></TextView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/greygradient">
+
     <View
-	    android:id="@+id/listSeparator"
-	    android:layout_width="fill_parent"
-	    android:layout_height="2dp"
-	    android:background="#e4e4e4"
-	    android:layout_below="@+id/postContent" android:layout_alignParentLeft="true" android:layout_marginTop="5dip"/>
-    <TextView android:text="2 posts" android:id="@+id/postCountText" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/joinDateText" android:layout_alignLeft="@+id/joinDateText"></TextView>
+        android:id="@+id/listSeparator1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+        android:background="#777777" />
+
+    <View
+        android:id="@+id/listSeparator2"
+        android:layout_width="fill_parent"
+        android:layout_height="21dp"
+        android:layout_below="@+id/listSeparator1"
+        android:background="#cccccc" />
+
+    <View
+        android:id="@+id/listSeparator3"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/listSeparator2"
+        android:background="#777777" />
+
+    <ImageView
+        android:id="@+id/avatarView"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/listSeparator3"
+        android:layout_marginLeft="3dip"
+        android:layout_marginTop="4dip"
+        android:src="@drawable/fp_icon" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/postContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/avatarView"
+        android:layout_marginLeft="3dip"
+        android:layout_marginTop="5dip"
+        android:autoLink="web"
+        android:text="Posts stuffz" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/usernameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/avatarView"
+        android:layout_marginLeft="5dip"
+        android:layout_toRightOf="@+id/avatarView"
+        android:text="Username" />
+
+    <TextView
+        android:id="@+id/joinDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/usernameText"
+        android:layout_below="@+id/usernameText"
+        android:text="11/09/01" />
+
+    <TextView
+        android:id="@+id/postCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/joinDateText"
+        android:layout_below="@+id/joinDateText"
+        android:text="2 posts" />
+
+    <ImageView
+        android:id="@+id/postDateIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/listSeparator2"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
+        android:src="@drawable/time" />
+
+    <TextView
+        android:id="@+id/postDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/listSeparator2"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="1dip"
+        android:text="Posted 3 hours ago" />
+
 </RelativeLayout>

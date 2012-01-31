@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -73,11 +74,15 @@ public class ThreadActivity extends FPActivity {
 		// Populate list with results
 		for (FPPost post : posts) {
 			final RelativeLayout postView = (RelativeLayout)inflater.inflate(R.layout.post, postList, false);
+			if (post.getStatus().equals("new"))
+				postView.setBackgroundDrawable(getResources().getDrawable(R.drawable.bluegradient));//setBackgroundColor(Color.rgb(0xc6,0xde,0xfd));
+			postView.getBackground().setDither(true);
 			((TextView)postView.findViewById(R.id.usernameText)).setText(post.getAuthor().getName());
 			((TextView)postView.findViewById(R.id.joinDateText)).setText(post.getAuthor().getJoinDate());
 			StringBuilder sb = new StringBuilder();
 			sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
 			((TextView)postView.findViewById(R.id.postCountText)).setText(sb.toString());
+			((TextView)postView.findViewById(R.id.postDate)).setText(post.getDate());
 			((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
 
 			api.getAvatar(post.getAuthor().getId(), new FacepunchAPI.AvatarCallback() {
@@ -91,6 +96,15 @@ public class ThreadActivity extends FPActivity {
 
 			postList.addView(postView);
 		}
+		
+		View view = new View(this);
+		view.setId(R.id.listSeparator);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 1);
+		lp.setMargins(0, 3, 0, 0);
+		view.setLayoutParams(lp);
+		view.setBackgroundColor(Color.rgb(0x77, 0x77, 0x77));
+		postList.addView(view);
+		
 		RelativeLayout changePage = (RelativeLayout)inflater.inflate(R.layout.changepage, postList, false);
 		StringBuilder sb = new StringBuilder();
 		sb.append(getString(R.string.page)).append(" ").append(page).append("/").append(pageCount);
