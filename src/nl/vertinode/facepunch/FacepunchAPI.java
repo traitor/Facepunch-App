@@ -90,7 +90,7 @@ public class FacepunchAPI {
 		}
 
 		public String getTitle() {
-			return name;
+			return title;
 		}
 		
 		public String getJoinDate() {
@@ -444,8 +444,18 @@ public class FacepunchAPI {
 	}
 
 	public void listPosts(final int threadId, int page, final PostCallback callback) {
-		asyncWebRequest("?username=" + this.username + "&password=" + this.password + "&action=getposts&thread_id=" + threadId + "&page=" + page, new WebRequestCallback() {
+		listPosts(threadId, page, -1, callback);
+	}
+	
+	public void listPosts(final int threadId, int page, int postId, final PostCallback callback) {
+		asyncWebRequest("?username=" + this.username + "&password=" + this.password + "&action=getposts&thread_id=" + threadId + (postId != -1 ? "?p=" + postId : "") + "&page=" + page, new WebRequestCallback() {
 			public void onResult(String source, String cookies) {
+				if (source == null) { //Server error.
+					Log.e("ServerError", "Returned source was null.");
+					callback.onResult(false, null, "", 0);
+					return;
+				}
+				
 				JSONObject json;
 				try {
 					json = new JSONObject(source);

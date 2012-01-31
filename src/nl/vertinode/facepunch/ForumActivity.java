@@ -99,7 +99,7 @@ public class ForumActivity extends FPActivity {
 
 					Intent intent = new Intent(ForumActivity.this, ThreadActivity.class);
 					intent.putExtra("thread_id", thread.getId());
-					intent.putExtra("page", 1); // todo: latest post, etc.
+					intent.putExtra("page", thread.pageCount());
 					startActivity(intent);
 				}
 			});

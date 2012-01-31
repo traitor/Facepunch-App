@@ -26,7 +26,8 @@ public class ThreadActivity extends FPActivity {
 	private int threadId = -1;
 	private int page = 1;
 	private int pageCount = 1;
-
+	private int post = -1;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// Load layout
@@ -37,6 +38,8 @@ public class ThreadActivity extends FPActivity {
 		if (extras != null) {
 			threadId = extras.getInt("thread_id");
 			page = extras.getInt("page");
+			if (extras.containsKey("post"))
+				post = extras.getInt("postid");
 		}
 
 		// Show loading spinner
@@ -47,7 +50,7 @@ public class ThreadActivity extends FPActivity {
 		postList.addView(loaderImage);
 		postList.setGravity(Gravity.CENTER_VERTICAL);
 
-		api.listPosts(threadId, page, new FacepunchAPI.PostCallback() {
+		api.listPosts(threadId, page, post, new FacepunchAPI.PostCallback() {
 			public void onResult(boolean success, FPPost[] posts, String threadTitle, int numPage) {
 				postList.removeView(loaderImage);
 				postList.setGravity(Gravity.NO_GRAVITY);
@@ -69,6 +72,7 @@ public class ThreadActivity extends FPActivity {
 
 		LinearLayout header = (LinearLayout)inflater.inflate(R.layout.listheader, postList, false);
 		((TextView)header.findViewById(R.id.headerTitle)).setText(title);
+		header.removeView(((View)header.findViewById(R.id.listHeaderSeparator)));
 		postList.addView(header);
 
 		// Populate list with results

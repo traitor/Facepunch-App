@@ -21,6 +21,7 @@
 	
 	<!-- Seperator -->
 	<View
+	    android:id="@+id/listHeaderSeparator"
 	    android:layout_width="fill_parent"
 	    android:layout_height="1dp"
 	    android:background="#cc0202"/>
