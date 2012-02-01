@@ -82,10 +82,19 @@ public class ThreadActivity extends FPActivity {
 				postView.setBackgroundDrawable(getResources().getDrawable(R.drawable.bluegradient));//setBackgroundColor(Color.rgb(0xc6,0xde,0xfd));
 			postView.getBackground().setDither(true);
 			((TextView)postView.findViewById(R.id.usernameText)).setText(post.getAuthor().getName());
-			((TextView)postView.findViewById(R.id.joinDateText)).setText(post.getAuthor().getJoinDate());
-			StringBuilder sb = new StringBuilder();
-			sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
-			((TextView)postView.findViewById(R.id.postCountText)).setText(sb.toString());
+			if (post.getAuthor().getTitle() != null && !post.getAuthor().getTitle().equals("")) {
+				((TextView)postView.findViewById(R.id.userTitleText)).setText(Html.fromHtml(post.getAuthor().getTitle()));
+				((TextView)postView.findViewById(R.id.joinDateText)).setText(post.getAuthor().getJoinDate());
+				StringBuilder sb = new StringBuilder();
+				sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
+				((TextView)postView.findViewById(R.id.postCountText)).setText(sb.toString());
+			} else { //There's probably a much nicer, cleaner way. but whatever.
+				((TextView)postView.findViewById(R.id.userTitleText)).setText(post.getAuthor().getJoinDate());
+				StringBuilder sb = new StringBuilder();
+				sb.append(post.getAuthor().getPostCount()).append(" ").append(getString(R.string.posts));
+				((TextView)postView.findViewById(R.id.joinDateText)).setText(sb.toString());
+				((TextView)postView.findViewById(R.id.postCountText)).setText("");
+			}
 			((TextView)postView.findViewById(R.id.postDate)).setText(post.getDate());
 			((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
 			

@@ -57,15 +57,27 @@
         android:layout_alignTop="@+id/avatarView"
         android:layout_marginLeft="5dip"
         android:layout_toRightOf="@+id/avatarView"
+        android:textStyle="bold"
+        android:textSize="15dp"
         android:text="Username" />
+    
+     <TextView
+        android:id="@+id/userTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/usernameText"
+        android:layout_below="@+id/usernameText"
+        android:textSize="11dp"
+        android:text="User Title" />
 
     <TextView
         android:id="@+id/joinDateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/usernameText"
-        android:layout_below="@+id/usernameText"
-        android:text="11/09/01" />
+        android:layout_alignLeft="@+id/userTitleText"
+        android:layout_below="@+id/userTitleText"
+        android:textSize="11dp"
+        android:text="June 2009" />
 
     <TextView
         android:id="@+id/postCountText"
@@ -73,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/joinDateText"
         android:layout_below="@+id/joinDateText"
+        android:textSize="11dp"
         android:text="2 posts" />
 
     <ImageView
