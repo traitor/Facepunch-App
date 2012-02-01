@@ -77,7 +77,7 @@ public class ForumActivity extends FPActivity {
 				continue;
 
 			// Create thread view
-			LinearLayout threadView = (LinearLayout)inflater.inflate(R.layout.listthread, threadList, false);
+			RelativeLayout threadView = (RelativeLayout)inflater.inflate(R.layout.listthread, threadList, false);
 			threadView.setTag(thread);
 			if (thread.isSticky())
 				threadView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xaa));
@@ -92,6 +92,7 @@ public class ForumActivity extends FPActivity {
 			if (thread.readerCount() > 0)
 				sb.append(" • ").append(thread.readerCount()).append(" ").append(getString(R.string.viewing));
 			((TextView)threadView.findViewById(R.id.threadInfo)).setText(sb.toString());
+			((TextView)threadView.findViewById(R.id.postDateInfo)).setText(thread.getLastPostTime());
 
 			threadView.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {

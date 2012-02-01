@@ -1,44 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Thread item in a list -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:orientation="vertical">
-	
-	<!-- Content -->
-	<LinearLayout
-	    android:layout_width="fill_parent"
-	    android:layout_height="45dp" android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="46dp" >
 
-	    <!-- Title -->
-		<TextView
-		    android:id="@+id/threadTitle"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:singleLine="true"
-		    android:gravity="top|left"
-		    android:ellipsize="end"
-		    android:textColor="#7b7b7b"
-		    android:textSize="16dp"
-		    android:text="Test Thread Title"/>
-	    <!-- Thread info -->
-		<TextView
-		    android:id="@+id/threadInfo"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:ellipsize="end"
-		    android:singleLine="true"
-		    android:gravity="bottom|left"
-		    android:textColor="#7b7b7b"
-		    android:textSize="12dp"
-		    android:text="User • 1 replies • 3 viewing"
-		    android:layout_marginTop="3dip"/>
-	</LinearLayout>
-	
-	<!-- Seperator -->
-	<View
-	    android:id="@+id/listSeparator"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-	    android:background="#e4e4e4"/>
-</LinearLayout>
+    <TextView
+        android:id="@+id/threadTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="Test Thread Title"
+        android:textColor="#7b7b7b"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/threadInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/threadTitle"
+        android:layout_marginTop="3dip"
+        android:ellipsize="end"
+        android:gravity="bottom|left"
+        android:singleLine="true"
+        android:text="User • 1 replies • 3 viewing"
+        android:textColor="#7b7b7b"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/postDateInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/threadInfo"
+        android:layout_alignBottom="@+id/threadInfo"
+        android:layout_alignParentRight="true"
+        android:text="3 hours ago"
+        android:textColor="#7b7b7b"
+        android:textSize="12dp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/threadInfo"
+        android:layout_marginTop="3dip"
+        android:background="#e4e4e4" />
+
+</RelativeLayout>

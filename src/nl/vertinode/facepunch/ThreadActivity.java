@@ -88,7 +88,7 @@ public class ThreadActivity extends FPActivity {
 			((TextView)postView.findViewById(R.id.postCountText)).setText(sb.toString());
 			((TextView)postView.findViewById(R.id.postDate)).setText(post.getDate());
 			((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(post.getMessageHTML(), new ImageGetter(), new TagHandler()));
-
+			
 			api.getAvatar(post.getAuthor().getId(), new FacepunchAPI.AvatarCallback() {
 				public void onResult(boolean success, Bitmap avatar) {
 					if (avatar == null)
