@@ -70,7 +70,7 @@ public class ViewPMActivity extends FPActivity {
 
 		((TextView)postView.findViewById(R.id.joinDateText)).setText(sb.toString());
 		((TextView)postView.findViewById(R.id.postCountText)).setText("");
-		((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(pm.getMessage(), new ImageGetter(), new TagHandler()));
+		((TextView)postView.findViewById(R.id.postContent)).setText(Html.fromHtml(pm.getMessage()));
 
 		api.getAvatar(pm.getAuthor().getId(), new FacepunchAPI.AvatarCallback() {
 			public void onResult(boolean success, Bitmap avatar) {

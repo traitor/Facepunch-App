@@ -10,7 +10,6 @@
 	<!-- Header -->
 	<include layout="@layout/header" />
 	
-	<!-- Login form -->
 	<ScrollView
 	    android:id="@+id/scroller"
 	    android:layout_width="fill_parent"
@@ -22,8 +21,8 @@
 		    android:id="@+id/threadList"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:paddingLeft="10dp"
-		    android:paddingRight="10dp"
+		    android:paddingLeft="9dp"
+		    android:paddingRight="9dp"
 		    android:paddingTop="3dp"
 		    android:paddingBottom="3dp"
 		    android:orientation="vertical"

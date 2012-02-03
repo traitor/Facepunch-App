@@ -83,6 +83,8 @@ public class ForumActivity extends FPActivity {
 				threadView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xaa));
 			else if (thread.isLocked())
 				threadView.setBackgroundColor(Color.rgb(0xee, 0xee, 0xee));
+			else if (thread.unreadPostCount() > 0)
+				threadView.setBackgroundColor(Color.rgb(0xbd, 0xd9, 0xfd));
 			((TextView)threadView.findViewById(R.id.threadTitle)).setText(thread.getTitle());
 
 			StringBuilder sb = new StringBuilder();

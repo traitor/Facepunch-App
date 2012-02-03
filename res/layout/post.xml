@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginBottom="4dp"
     android:background="@drawable/greygradient">
@@ -45,6 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/avatarView"
         android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
         android:layout_marginTop="5dip"
         android:autoLink="web"
         android:text="Posts stuffz" >
@@ -58,7 +59,7 @@
         android:layout_marginLeft="5dip"
         android:layout_toRightOf="@+id/avatarView"
         android:textStyle="bold"
-        android:textSize="15dp"
+        android:textSize="14dp"
         android:text="Username" />
     
      <TextView
@@ -67,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/usernameText"
         android:layout_below="@+id/usernameText"
+        android:singleLine="true"
         android:textSize="11dp"
         android:text="User Title" />
 

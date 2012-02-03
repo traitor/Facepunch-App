@@ -8,7 +8,6 @@
   	<!-- Header -->
 	<include layout="@layout/header" />
 	
-	<!-- Login form -->
 	<ScrollView
 	    android:id="@+id/scroller"
 	    android:layout_width="fill_parent"

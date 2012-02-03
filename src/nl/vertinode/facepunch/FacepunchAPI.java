@@ -367,6 +367,11 @@ public class FacepunchAPI {
 			public void onResult(String source, String cookies) {
 				JSONObject json;
 				try {
+					if (source == null) {
+						callback.onResult(false, null, 0); //We can't see this forum.
+						return;
+					}
+					
 					json = new JSONObject(source);
 					callback.onResult(true, parseThreads(json.getJSONArray("threads")), json.getInt("numpages"));
 					return;
